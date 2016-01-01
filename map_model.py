@@ -82,7 +82,7 @@ class MapModel:
     '''
     Передвигает игрока на заднное смещение, предварительно произведя ход
     '''
-    def player_move(self, dx, dy):
+    def PlayerMove(self, dx, dy):
         px = self.playerX()
         py = self.playerY()
         if (Mid(0, px + dx, self.width) and Mid(0, py + dy, self.height)):

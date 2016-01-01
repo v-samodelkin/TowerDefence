@@ -2,9 +2,11 @@ from MapObjects.Enemy import Enemy
 from MapObjects.Ground import Ground
 from MapObjects.Player import Player
 from MapObjects.Wall import Wall
-import MapObjects
+
+
 class Arrow:
     ExtraTurns = 1
+
     def __init__(self, damage, dx, dy):
         self.damage = damage
         self.dx = dx
@@ -26,4 +28,3 @@ class Arrow:
         elif (isinstance(obj, Ground)):
             return (None, self)
         raise Exception("Arrow hit in " + str(type(obj)))
-
