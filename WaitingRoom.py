@@ -6,7 +6,6 @@ class WaitingRoom:
         self.home = home
 
     def SetObj(self, obj, hard = False):
-        if (type(obj) == mm.Cell):
-            print("AHTUNG!")
+        assert not isinstance(obj, mm.Cell)
         self.obj = obj
         self.hard = hard

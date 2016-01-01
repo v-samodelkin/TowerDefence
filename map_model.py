@@ -1,37 +1,48 @@
 # -*- coding: utf8 -*-
 import random
+import itertools
 from heapq import *
-from Enemy import Enemy
-from Cell import Cell
-import Statistic as st
-#statistic
+from MapObjects.Arrow import Arrow
+from MapObjects.Cell import Cell
+from MapObjects.Enemy import Enemy
+from MapObjects.Ground import Ground
+from MapObjects.HeartStone import HeartStone
+from MapObjects.Player import Player
+from MapObjects.Wall import Wall
 
+#statistic
+switcher = {
+    (0, -1): 2,
+    (1, 0): 3,
+    (0, 1): 0,
+    (-1, 0): 1,
+}
 
 def Mid(x, y, z):
-    return ((x <= y) and (y < z))
+    return x <= y < z
 
 def way(dx, dy):
-    switcher = {
-        (0, -1): 2,
-        (1, 0): 3,
-        (0, 1): 0,
-        (-1, 0): 1,
-    }
     return switcher.get((dx, dy))
 
 class MapModel:
+    constdx = [0,1,0,-1]
+    constdy = [1,0,-1,0]
+
     def playerX(self):
-        for x in range(self.width):
-            for y in range(self.height):
-                if (type(self.cells[x][y].obj) == Player):
-                    print("X " + str(x))
-                    return x
+        for xy in itertools.product(range(self.width), range(self.height)):
+            x = xy[0]
+            y = xy[1]
+            if (type(self.cells[x][y].obj) == Player):
+                print("X " + str(x))
+                return x
+
     def playerY(self):
-        for x in range(self.width):
-            for y in range(self.height):
-                if (type(self.cells[x][y].obj) == Player):
-                    print("Y " + str(y))
-                    return y
+        for xy in itertools.product(range(self.width), range(self.height)):
+            x = xy[0]
+            y = xy[1]
+            if (type(self.cells[x][y].obj) == Player):
+                print("Y " + str(y))
+                return y
 
     def __init__(self, width, height, sizeOfCastle = 8):
         self.width = width
@@ -41,33 +52,27 @@ class MapModel:
         self.whereToGo = []
         self.currentTurn = 0
         self.singletonGround = Ground()
-        self.constdx = [0,1,0,-1]
-        self.constdy = [1,0,-1,0]
 
+        self.cells = [[Cell(self.singletonGround) for y in range(height)] for x in range(width)]
+        self.monsterWay = [[1e9 for y in range(height)] for x in range(width)]
+        self.whereToGo = [[[] for y in range(height)] for x in range(width)]
 
-        for i in range(width):
-            self.cells.append([])
-            self.monsterWay.append([])
-            self.whereToGo.append([])
-            for j in range(height):
-                self.cells[i].append(Cell(self.singletonGround))
-                self.monsterWay[i].append(1e9)
-                self.whereToGo[i].append([])
-        cdx = [0,1,0,-1]
-        cdy = [-1,0,1,0]
-        for x in range(width):
-            for y in range(height):
-                for k in range(4):
-                    newX = x + cdx[k]
-                    newY = y + cdy[k]
-                    if (Mid(0, newX, self.width) and Mid(0, newY, self.height)):
-                        self.cells[x][y].ways[k].where = self.cells[newX][newY].ways[(k + 2) % 4]
+        cdx = self.constdx
+        cdy = [-y for y in self.constdy]
 
+        for xyk in itertools.product(range(width), range(height), range(4)):
+            x = xyk[0]
+            y = xyk[1]
+            k = xyk[2]
+            newX = x + cdx[k]
+            newY = y + cdy[k]
+            if (Mid(0, newX, self.width) and Mid(0, newY, self.height)):
+                self.cells[x][y].ways[k].where = self.cells[newX][newY].ways[(k + 2) % 4]
 
+        for i in range(sizeOfCastle):
+            self.cells[i][-sizeOfCastle].SetObj(Wall(200) if random.randint(0, 5) > 3 else self.singletonGround)
+            self.cells[sizeOfCastle - 1][-(i + 1)].SetObj(Wall(200) if random.randint(0, 5) > 3 else self.singletonGround)
 
-        for i in range(0, sizeOfCastle):
-            self.cells[i][height - sizeOfCastle].SetObj(Wall(200) if random.randint(0, 5) > 3 else self.singletonGround)
-            self.cells[sizeOfCastle - 1][height - i - 1].SetObj(Wall(200) if random.randint(0, 5) > 3 else self.singletonGround)
         self.player = Player()
         self.cells[3][4].SetObj(self.player)
         self.heartstone = HeartStone(2, self.height - 3)
@@ -84,7 +89,7 @@ class MapModel:
             self.Turn(dx, dy)
 
 
-    def PlayerMove(self, dx, dy):
+    def PlayerCorridorTurn(self, dx, dy):
         if (dx != 0 or dy != 0):
             px = self.playerX()
             py = self.playerY()
@@ -110,7 +115,7 @@ class MapModel:
     '''
     Обработка хода стрелы на клетке (x, y)
     '''
-    def ArrowTurn(self, x, y):
+    def ArrowCorridorTurn(self, x, y):
         print("Arrow turn!")
         dx = self.cells[x][y].obj.dx
         dy = self.cells[x][y].obj.dy
@@ -123,7 +128,7 @@ class MapModel:
     '''
     Обработка хода врага на клетке (x, y)
     '''
-    def EnemyTurn(self, x, y):
+    def EnemyCorridorTurn(self, x, y):
         countOfWays = len(self.whereToGo[x][y])
         if countOfWays > 0:
             var = random.randint(0, countOfWays - 1)
@@ -145,13 +150,13 @@ class MapModel:
             for y in range(self.height):
                     #Arrow
                     if ((type(self.cells[x][y].obj) == Arrow) and (turn <= Arrow.ExtraTurns)):
-                        self.ArrowTurn(x, y)
+                        self.ArrowCorridorTurn(x, y)
                     #Enemy
                     elif ((type(self.cells[x][y].obj) == Enemy) and (turn <= Enemy.ExtraTurns)):
-                        self.EnemyTurn(x, y)
+                        self.EnemyCorridorTurn(x, y)
                     #Player
                     elif ((type(self.cells[x][y].obj) == Player) and (turn <= Player.ExtraTurns)):
-                        self.PlayerMove(playerDX, playerDY)
+                        self.PlayerCorridorTurn(playerDX, playerDY)
 
     '''
     Генерация врагов
@@ -263,82 +268,3 @@ class MapModel:
                         self.whereToGo[newX][newY].append((curX, curY))
                     elif weight == self.monsterWay[newX][newY]:
                         self.whereToGo[newX][newY].append((curX, curY))
-
-
-class Wall:
-    def __init__(self, health):
-        self.health = health
-        self.unpretty = 1000
-
-class Ground:
-    def __init__(self):
-        self.unpretty = 100
-
-
-
-class Arrow:
-    ExtraTurns = 1
-    def __init__(self, damage, dx, dy):
-        self.damage = damage
-        self.dx = dx
-        self.dy = dy
-        self.unpretty = 150
-        self.ableToGo = {Player, Enemy, Wall, Ground}
-
-    def Collision(self, obj):
-        type1 = type(obj)
-        if ((type1 == Enemy) or (type1 == Player)):
-            print("A -> E")
-            revObjects = obj.Collision(self)
-            return (revObjects[1], revObjects[0])
-        elif (type1 == Wall):
-            if (self.damage >= obj.health):
-                return (None, None)
-            else:
-                obj.health -= self.damage
-                return (None, obj)
-        elif (type1 == Ground):
-            return (None, self)
-        raise Exception("Arrow врезалась в " + str(type1))
-
-
-class HeartStone:
-    def __init__(self, X, Y):
-        self.health = 500
-        self.unpretty = 0
-        self.X = X
-        self.Y = Y
-
-class Player:
-    ExtraTurns = 0
-    def __init__(self):
-        self.unpretty = 0
-        self.cooldown = 0
-        self.health = 30
-        self.maxHealth = 30
-        self.damage = 20
-        self.ableToGo = {Arrow, Enemy, Ground}
-
-    def AbleToGo(self, where):
-        return (type(where) == Ground)
-
-    def DecreaseCooldown(self, count):
-        self.cooldown -= count
-        if (self.cooldown < 0):
-            self.cooldown = 0
-
-    def Collision(self, obj):
-        type1 = type(obj)
-        if (type1 == Enemy):
-            self.health -= obj.damage * (obj.health / self.damage)
-            if (self.health > 0):
-                print("Health:" + str(self.health))
-                obj.OnDead()
-                return (None, self)
-            else:
-                return (None, obj)
-        elif (type1 == Wall):
-            return (self, obj)
-        elif (type1 == Ground):
-            return (None, self)
-        raise Exception("Player врезался в " + str(type1))

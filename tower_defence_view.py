@@ -26,12 +26,13 @@ class Viewer:
         self.healthProgressBar.place(x = map_model.width * sizeOfElement + 35, y = 5)
         self.healthProgressBar["maximum"] = self.model.player.maxHealth
         #Загрузка текстур
-        self.iwall = PhotoImage(file="wall.png")
-        self.iground = PhotoImage(file="ground1.png")
-        self.ienemy1 = PhotoImage(file="enemy2v2.png")
-        self.iplayer = PhotoImage(file="playerv2.png")
-        self.iarrow = PhotoImage(file="ballv2.png")
-        self.iheartstone = PhotoImage(file="heart.png")
+        imagesdir = "images/"
+        self.iwall = PhotoImage(file=imagesdir+"wall.png")
+        self.iground = PhotoImage(file=imagesdir+"ground1.png")
+        self.ienemy1 = PhotoImage(file=imagesdir+"enemy2v2.png")
+        self.iplayer = PhotoImage(file=imagesdir+"playerv2.png")
+        self.iarrow = PhotoImage(file=imagesdir+"ballv2.png")
+        self.iheartstone = PhotoImage(file=imagesdir+"heart.png")
 
         #Создание поля для отображения
         self.view_model = []
