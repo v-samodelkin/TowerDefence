@@ -1,10 +1,14 @@
 # -*- coding: utf8 -*-
 import map_model as mm
 import Statistic as st
+
+
+
 class Enemy:
     ExtraTurns = 0
     Dx = [0,1,0,-1]
     Dy = [1,0,-1,0]
+    EnemyColliders = {}
 
     def __init__(self, health, width, height):
         self.ableToGo = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone}
@@ -14,29 +18,50 @@ class Enemy:
         self.field = [[-1 for _ in range(height)] for _ in range(width)]
 
     def Collision(self, obj):
+        self.LazyCollisionInit()
+        self.LazyCollisionInit = lambda: None
         type1 = type(obj)
-        if (type1 == mm.Arrow):
-            print("E -> A")
-            if (self.health > obj.damage):
-                print("Alive!")
-                self.health -= obj.damage
+        try:
+            return self.EnemyColliders[type1](self, obj)
+        except KeyError:
+            raise Exception('Enemy врезался в ' + str(type1))
+
+
+    def OnDead(self):
+        st.TotalDeadEnem += 1
+
+
+    def CollideRegistrar(self, ObstacleClass):
+        def Registered(func):
+            self.EnemyColliders[ObstacleClass] = func
+            return func
+        return Registered
+
+
+    def LazyCollisionInit(self):
+        @self.CollideRegistrar(mm.Ground)
+        def GroundCollide(self, ground):
+            return (None, self)
+
+        @self.CollideRegistrar(mm.HeartStone)
+        def HeartStoneCollide(self, heartstone):
+            heartstone.Attack(self.damage * (self.health / heartstone.defence))
+            return (None, heartstone)
+
+        @self.CollideRegistrar(mm.Arrow)
+        def ArrowCollide(self, arrow):
+            if (self.health > arrow.damage):
+                self.health -= arrow.damage
                 return (None, self)
             else:
                 self.OnDead()
                 return (None, None)
-        elif (type1 == mm.Player):
-            obj.health -= self.damage * (self.health / obj.damage)
-            if (obj.health > 0):
-                print("Health(e):" + str(obj.health))
+
+        @self.CollideRegistrar(mm.Player)
+        def PlayerCollide(self, player):
+            player.health -= self.damage * (self.health / player.damage)
+            if (player.health > 0):
                 self.OnDead()
-                return (None, obj)
+                return (None, player)
             else:
                 return (None, self)
-        elif (type1 == mm.Ground):
-            return (None, self)
-        elif (type1 == mm.HeartStone):
-            return (None, self)
-        raise Exception('Enemy врезался в ' + str(type1))
-
-    def OnDead(self):
-        st.TotalDeadEnem += 1

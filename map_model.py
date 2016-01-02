@@ -75,7 +75,7 @@ class MapModel:
 
         self.player = Player()
         self.cells[3][4].SetObj(self.player)
-        self.heartstone = HeartStone(2, self.height - 3)
+        self.heartstone = HeartStone(2, self.height - 3, self.player)
         self.cells[3][-3].SetObj(self.heartstone)
 
 
@@ -90,7 +90,7 @@ class MapModel:
 
 
     def PlayerCorridorTurn(self, dx, dy):
-        if (dx != 0 or dy != 0):
+        if (dx or dy):
             px = self.playerX()
             py = self.playerY()
             if (Mid(0, px + dx, self.width) and Mid(0, py + dy, self.height)):
@@ -110,7 +110,7 @@ class MapModel:
                     #if Arrow.AbleToGo(self.cells[newX][newY]):
                     arrow = Arrow(damage, self.constdx[i], self.constdy[i])
                     self.cells[newX][newY].ways[way(self.constdx[i], self.constdy[i])].SetObj(arrow)
-            self.Turn()
+        self.Turn()
 
     '''
     Обработка хода стрелы на клетке (x, y)

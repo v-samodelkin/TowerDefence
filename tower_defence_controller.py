@@ -1,14 +1,17 @@
-
+from MyThread import setInterval
 class Controller:
     def __init__(self, viewer):
         self.viewer = viewer
         self.model = viewer.model
+        self.stop = self.function()
+        self.action = self.model.Turn
 
     def Start(self):
         self.viewer.view_map_model()
         self.viewer.top.bind("<Key>", self.Key)
 
-    def ActionByKey(self, argument):
+
+    def GetActionByKey(self, argument):
         switcher = {
             'w': (lambda:self.model.PlayerMove(0,-1)),
             's': (lambda:self.model.PlayerMove(0,1)),
@@ -17,9 +20,14 @@ class Controller:
             'e': (lambda:self.model.Turn()),
             ' ': (lambda:self.model.player_fire(10)),
         }
-        switcher.get(argument, lambda:None)()
+        return switcher.get(argument, lambda:None)
 
     def Key(self, event):
-        self.ActionByKey(event.char)
+        self.action = self.GetActionByKey(event.char)
+        self.viewer.view_map_model()
+
+    @setInterval(.3)
+    def function(self):
+        self.action()
         self.viewer.view_map_model()
 
