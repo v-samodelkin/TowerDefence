@@ -1,4 +1,6 @@
 from WaitingRoom import WaitingRoom
+
+
 class Cell:
     def __init__(self, obj):
         self.obj = obj
@@ -6,4 +8,3 @@ class Cell:
 
     def SetObj(self, obj):
         self.obj = obj
-

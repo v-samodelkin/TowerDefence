@@ -1,16 +1,17 @@
 import threading
 
+
 def setInterval(interval):
     def decorator(function):
         def wrapper(*args, **kwargs):
             stopped = threading.Event()
 
-            def loop(): # executed in another thread
-                while not stopped.wait(interval): # until stopped
+            def loop():
+                while not stopped.wait(interval):
                     function(*args, **kwargs)
 
             t = threading.Thread(target=loop)
-            t.daemon = True # stop if the program exits
+            t.daemon = True
             t.start()
             return stopped
         return wrapper

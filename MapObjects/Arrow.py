@@ -5,16 +5,17 @@ from MapObjects.Wall import Wall
 from MapObjects.HeartStone import HeartStone
 import map_model as mm
 
+
 class Arrow:
     ExtraTurns = 1
     ArrowColliders = {}
+
     def __init__(self, damage, dx, dy):
         self.damage = damage
         self.dx = dx
         self.dy = dy
         self.unpretty = 150
         self.ableToGo = {Player, Enemy, Wall, Ground, HeartStone}
-
 
     def Collision(self, obj):
         self.LazyCollisionInit()
@@ -30,7 +31,6 @@ class Arrow:
             self.ArrowColliders[ObstacleClass] = func
             return func
         return Registered
-
 
     def LazyCollisionInit(self):
         @self.CollideRegistrar(mm.Enemy)

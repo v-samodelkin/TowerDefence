@@ -10,7 +10,6 @@ from MapObjects.HeartStone import HeartStone
 from MapObjects.Player import Player
 from MapObjects.Wall import Wall
 
-#statistic
 switcher = {
     (0, -1): 2,
     (1, 0): 3,
@@ -18,16 +17,18 @@ switcher = {
     (-1, 0): 1,
 }
 
+
 def Mid(x, y, z):
     return x <= y < z
+
 
 def way(dx, dy):
     return switcher.get((dx, dy))
 
-class MapModel:
-    constdx = [0,1,0,-1]
-    constdy = [1,0,-1,0]
 
+class MapModel:
+    constdx = [0, 1, 0, -1]
+    constdy = [1, 0, -1, 0]
 
     def playerX(self):
         for xy in itertools.product(range(self.width), range(self.height)):
@@ -45,7 +46,7 @@ class MapModel:
                 print("Y " + str(y))
                 return y
 
-    def __init__(self, width, height, sizeOfCastle = 8, playerPos = (3, 4), heartStonePos = (3, -3)):
+    def __init__(self, width, height, sizeOfCastle=8, playerPos=(3, 4), heartStonePos=(3, -3)):
         self.width = width
         self.height = height
         self.cells = []
@@ -79,7 +80,6 @@ class MapModel:
         self.heartstone = HeartStone((self.width + heartStonePos[0]) % self.width, (self.height + heartStonePos[1]) % self.height, self.player)
         self.cells[heartStonePos[0]][heartStonePos[1]].SetObj(self.heartstone)
 
-
     '''
     Передвигает игрока на заднное смещение, предварительно произведя ход
     '''
@@ -88,7 +88,6 @@ class MapModel:
         py = self.playerY()
         if (Mid(0, px + dx, self.width) and Mid(0, py + dy, self.height)):
             self.Turn(dx, dy)
-
 
     def PlayerCorridorTurn(self, dx, dy):
         if (dx or dy):
@@ -108,7 +107,6 @@ class MapModel:
                 newX = self.playerX() + self.constdx[i]
                 newY = self.playerY() + self.constdy[i]
                 if (Mid(0, newX, self.width) and Mid(0, newY, self.height)):
-                    #if Arrow.AbleToGo(self.cells[newX][newY]):
                     arrow = Arrow(damage, self.constdx[i], self.constdy[i])
                     self.cells[newX][newY].ways[way(self.constdx[i], self.constdy[i])].SetObj(arrow)
         self.Turn()
@@ -142,20 +140,19 @@ class MapModel:
                 self.cells[newX][newY].ways[way(dx, dy)].SetObj(enemy)
         self.cells[x][y].SetObj(self.singletonGround)
 
-
     '''
     Распихивание по комнатам ожидания
     '''
     def InitWainingRooms(self, playerDX, playerDY, turn):
         for x in range(self.width):
             for y in range(self.height):
-                    #Arrow
+                    # Arrow
                     if ((type(self.cells[x][y].obj) == Arrow) and (turn <= Arrow.ExtraTurns)):
                         self.ArrowCorridorTurn(x, y)
-                    #Enemy
+                    # Enemy
                     elif ((type(self.cells[x][y].obj) == Enemy) and (turn <= Enemy.ExtraTurns)):
                         self.EnemyCorridorTurn(x, y)
-                    #Player
+                    # Player
                     elif ((type(self.cells[x][y].obj) == Player) and (turn <= Player.ExtraTurns)):
                         self.PlayerCorridorTurn(playerDX, playerDY)
 
@@ -189,7 +186,7 @@ class MapModel:
                             anybodyWaiting = True
 
                             cell = self.cells[x][y]
-                            if (cell.ways[i].where.obj != None):
+                            if (cell.ways[i].where.obj is not None):
                                 objects = cell.ways[i].obj.Collision(cell.ways[i].where.obj)
                                 if (objects[0] != None and objects[1] != None):
                                     objects[1], objects[0] = objects[0], objects[1]
@@ -213,28 +210,28 @@ class MapModel:
     '''
     Вычисление основных этапов хода
     '''
-    def Turn(self, playerDX = 0, playerDY = 0):
-        #Preload
+    def Turn(self, playerDX=0, playerDY=0):
+        # Preload
         self.currentTurn += 1
         print("Turn: " + str(self.currentTurn))
         self.FindWay(self.heartstone.X, self.heartstone.Y)
 
-        #Player
+        # Player
         self.player.DecreaseCooldown(1)
 
-        #GenerateEnemies
+        # GenerateEnemies
         if (self.currentTurn % 4 == 0):
             self.GenerateEnemies(1)
 
         for turn in range(2):
-            #Распихивание по комнатам ожидания
+            # Распихивание по комнатам ожидания
             self.InitWainingRooms(playerDX, playerDY, turn)
 
-            #Обработка комнат ожидания
+            # Обработка комнат ожидания
             self.DealWithWaitingRooms()
 
     def FindWay(self, X, Y):
-        #Preload
+        # Preload
         for i in range(self.width):
             for j in range(self.height):
                 self.monsterWay[i][j] = 1e9
@@ -244,7 +241,7 @@ class MapModel:
         h = []
         heappush(h, (0, (X, Y)))
 
-        #Start
+        # Start
         while h:
             min_node = heappop(h)
             curX = min_node[1][0]
@@ -255,13 +252,14 @@ class MapModel:
                 break
             visited.add(min_node[1])
 
-
             current_weight = self.monsterWay[curX][curY]
+
             for i in range(4):
                 newX = curX + self.constdx[i]
                 newY = curY + self.constdy[i]
                 if (Mid(0, newX, self.width) and Mid(0, newY, self.height)):
-                    weight = current_weight + self.cells[newX][newY].obj.unpretty
+                    unpretty = self.cells[newX][newY].obj.unpretty
+                    weight = current_weight + unpretty
                     if weight < self.monsterWay[newX][newY]:
                         self.monsterWay[newX][newY] = weight
                         heappush(h, (weight, (newX, newY)))

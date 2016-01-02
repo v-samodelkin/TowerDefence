@@ -3,11 +3,10 @@ import map_model as mm
 import Statistic as st
 
 
-
 class Enemy:
     ExtraTurns = 0
-    Dx = [0,1,0,-1]
-    Dy = [1,0,-1,0]
+    Dx = [0, 1, 0, -1]
+    Dy = [1, 0, -1, 0]
     EnemyColliders = {}
 
     def __init__(self, health, width, height):
@@ -26,17 +25,14 @@ class Enemy:
         except KeyError:
             raise Exception('Enemy врезался в ' + str(type1))
 
-
     def OnDead(self):
         st.TotalDeadEnem += 1
-
 
     def CollideRegistrar(self, ObstacleClass):
         def Registered(func):
             self.EnemyColliders[ObstacleClass] = func
             return func
         return Registered
-
 
     def LazyCollisionInit(self):
         @self.CollideRegistrar(mm.Ground)

@@ -1,5 +1,6 @@
 class HeartStone:
     defence = 1
+
     def __init__(self, X, Y, player):
         self.health = 500
         self.unpretty = 0

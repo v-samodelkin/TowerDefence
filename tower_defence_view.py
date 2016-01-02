@@ -65,7 +65,6 @@ class Viewer:
         }
         return switcher.get(type(argument), None)
 
-
     '''
     Производит перерисовку поля в связи с произошедшими изменениями
     '''
@@ -75,13 +74,12 @@ class Viewer:
                 image = self.element_to_image(self.model.cells[i][j].obj)
                 if (image != self.view_model[i][j]):
                     self.canvas.delete(self.images_id[i][j])
-                    self.images_id[i][j] = self.canvas.create_image(i * 24 + 12, j * 24 + 12, image = image)
+                    self.images_id[i][j] = self.canvas.create_image(i * 24 + 12, j * 24 + 12, image=image)
                     self.view_model[i][j] = image
 
         self.enemyLvlProgressBar["value"] = st.TotalDeadEnem
         self.healthProgressBar["value"] = self.model.player.health
         self.top.update()
-
 
 
 def main():
