@@ -51,14 +51,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="map_model.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="map_model.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/map_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5028011">
-              <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="78" column="66" selection-start-line="78" selection-start-column="66" selection-end-line="78" selection-end-column="66" />
               <folding>
                 <element signature="e#23#36#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="readme.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/readme.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.25168237">
+              <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MapObjects/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -107,26 +127,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tower_defence_controller.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tower_defence_controller.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="19" selection-start-line="28" selection-start-column="19" selection-end-line="28" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyThread.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/MyThread.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
     </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -144,7 +144,6 @@
         <option value="$PROJECT_DIR$/Statistic.py" />
         <option value="$PROJECT_DIR$/WaitingRoom.py" />
         <option value="$PROJECT_DIR$/tower_defence_view.py" />
-        <option value="$PROJECT_DIR$/readme.txt" />
         <option value="$PROJECT_DIR$/Cell.py" />
         <option value="$PROJECT_DIR$/Enemy.py" />
         <option value="$PROJECT_DIR$/images/Wall" />
@@ -160,6 +159,7 @@
         <option value="$PROJECT_DIR$/MapObjects/Arrow.py" />
         <option value="$PROJECT_DIR$/MapObjects/Player.py" />
         <option value="$PROJECT_DIR$/map_model.py" />
+        <option value="$PROJECT_DIR$/readme.txt" />
       </list>
     </option>
   </component>
@@ -729,14 +729,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/readme.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -776,14 +768,6 @@
           <folding>
             <element signature="e#23#44#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/MapObjects/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -863,13 +847,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/MapObjects/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/map_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5028011">
-          <caret line="92" column="20" selection-start-line="92" selection-start-column="20" selection-end-line="92" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="66" selection-start-line="78" selection-start-column="66" selection-end-line="78" selection-end-column="66" />
           <folding>
             <element signature="e#23#36#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readme.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.25168237">
+          <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>

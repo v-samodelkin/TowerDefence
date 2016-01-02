@@ -28,6 +28,7 @@ class MapModel:
     constdx = [0,1,0,-1]
     constdy = [1,0,-1,0]
 
+
     def playerX(self):
         for xy in itertools.product(range(self.width), range(self.height)):
             x = xy[0]
@@ -44,7 +45,7 @@ class MapModel:
                 print("Y " + str(y))
                 return y
 
-    def __init__(self, width, height, sizeOfCastle = 8):
+    def __init__(self, width, height, sizeOfCastle = 8, playerPos = (3, 4), heartStonePos = (3, -3)):
         self.width = width
         self.height = height
         self.cells = []
@@ -74,9 +75,9 @@ class MapModel:
             self.cells[sizeOfCastle - 1][-(i + 1)].SetObj(Wall(200) if random.randint(0, 5) > 3 else self.singletonGround)
 
         self.player = Player()
-        self.cells[3][4].SetObj(self.player)
-        self.heartstone = HeartStone(2, self.height - 3, self.player)
-        self.cells[3][-3].SetObj(self.heartstone)
+        self.cells[playerPos[0]][playerPos[1]].SetObj(self.player)
+        self.heartstone = HeartStone((self.width + heartStonePos[0]) % self.width, (self.height + heartStonePos[1]) % self.height, self.player)
+        self.cells[heartStonePos[0]][heartStonePos[1]].SetObj(self.heartstone)
 
 
     '''
@@ -184,7 +185,7 @@ class MapModel:
             for x in range(self.width):
                 for y in range(self.height):
                     for i in range(4):
-                        if (self.cells[x][y].ways[i].obj != None):
+                        if (self.cells[x][y].ways[i].obj is not None):
                             anybodyWaiting = True
 
                             cell = self.cells[x][y]
@@ -195,7 +196,7 @@ class MapModel:
                                 cell.ways[i].SetObj(objects[1])
                                 cell.ways[i].where.SetObj(objects[0])
 
-                        if (self.cells[x][y].ways[i].obj != None):
+                        if (self.cells[x][y].ways[i].obj is not None):
                             anybodyWaiting = True
                             cell = self.cells[x][y]
                             if (type(cell.obj) in cell.ways[i].obj.ableToGo):
@@ -244,7 +245,7 @@ class MapModel:
         heappush(h, (0, (X, Y)))
 
         #Start
-        while (len(h) != 0):
+        while h:
             min_node = heappop(h)
             curX = min_node[1][0]
             curY = min_node[1][1]
