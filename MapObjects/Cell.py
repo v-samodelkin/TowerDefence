@@ -6,5 +6,5 @@ class Cell:
         self.obj = obj
         self.ways = [WaitingRoom(None, self) for x in range(4)]
 
-    def SetObj(self, obj):
+    def set_obj(self, obj):
         self.obj = obj

@@ -7,7 +7,7 @@ import Statistic as st
 
 
 class Viewer:
-    def __init__(self, sizeOfElement, map_model):
+    def __init__(self, size_of_element, map_model):
         # Настройка Style
         self.top = Tk()
         s = ttk.Style()
@@ -17,28 +17,28 @@ class Viewer:
 
         # Настройка canvas
         self.model = map_model
-        self.sizeOfElement = sizeOfElement
-        self.canvas = Canvas(self.top, width=map_model.width * sizeOfElement + 200,
-                             height=map_model.height * sizeOfElement)
+        self.size_of_element = size_of_element
+        self.canvas = Canvas(self.top, width=map_model.width * size_of_element + 200,
+                             height=map_model.height * size_of_element)
         self.canvas.pack()
 
         # Текстовое поле
         self.info = Text(self.top, height=10, width=20)
         self.info.insert(END, "Информация о герое:")
 
-        self.info.place(x=map_model.width * sizeOfElement + 30, y=40)
+        self.info.place(x=map_model.width * size_of_element + 30, y=40)
 
         # EnemyLvlProgressBar
-        self.enemyLvlProgressBar = ttk.Progressbar(orient=VERTICAL, length=map_model.height * sizeOfElement - 10,
+        self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=map_model.height * size_of_element - 10,
                                                    mode='determinate', style="blue.Vertical.TProgressbar")
-        self.enemyLvlProgressBar.place(x=map_model.width * sizeOfElement + 5, y=5)
-        self.enemyLvlProgressBar["maximum"] = 15
+        self.enemy_lvl_progress_bar.place(x=map_model.width * size_of_element + 5, y=5)
+        self.enemy_lvl_progress_bar["maximum"] = 15
 
         # HealthProgressBar
-        self.healthProgressBar = ttk.Progressbar(orient=HORIZONTAL, length=160, mode='determinate',
+        self.health_progress_bar = ttk.Progressbar(orient=HORIZONTAL, length=160, mode='determinate',
                                                  style="red.Horizontal.TProgressbar")
-        self.healthProgressBar.place(x=map_model.width * sizeOfElement + 35, y=5)
-        self.healthProgressBar["maximum"] = self.model.player.maxHealth
+        self.health_progress_bar.place(x=map_model.width * size_of_element + 35, y=5)
+        self.health_progress_bar["maximum"] = self.model.player.max_health
 
         # Загрузка текстур
         imagesdir = "images/"
@@ -64,7 +64,7 @@ class Viewer:
     '''
 
     def coor(self, x):
-        return x * 24 + self.sizeOfElement / 2
+        return x * 24 + self.size_of_element / 2
 
     '''
     Сопоставляет каждому элементу на поле сохранённую текстуру
@@ -94,20 +94,20 @@ class Viewer:
                     self.images_id[i][j] = self.canvas.create_image(i * 24 + 12, j * 24 + 12, image=image)
                     self.view_model[i][j] = image
 
-        self.enemyLvlProgressBar["value"] = st.TotalDeadEnem
-        self.healthProgressBar["value"] = self.model.player.health
+        self.enemy_lvl_progress_bar["value"] = st.total_dead_enemies
+        self.health_progress_bar["value"] = self.model.player.health
         self.update_text_box()
         self.top.update()
 
     def update_text_box(self):
         self.info.delete(1.0, END)
         self.info.insert(END, "Информация о герое\n")
-        self.info.insert(END, "Очков: {0}\n".format(st.TotalDeadEnem))
+        self.info.insert(END, "Очков: {0}\n".format(st.total_dead_enemies))
         self.info.insert(END, "Здоровье: {0} hp\n".format(self.model.player.health))
 
 def main():
     controller = tdc.Controller(Viewer(24, mm.MapModel(32, 32)))
-    controller.Start()
+    controller.start()
     controller.viewer.top.mainloop()
 
 

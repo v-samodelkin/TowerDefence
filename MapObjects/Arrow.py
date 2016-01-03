@@ -7,50 +7,51 @@ import map_model as mm
 
 
 class Arrow:
-    ExtraTurns = 1
-    ArrowColliders = {}
+    extra_turns = 1
+    arrow_colliders = {}
 
     def __init__(self, damage, dx, dy):
         self.damage = damage
         self.dx = dx
         self.dy = dy
         self.unpretty = 150
-        self.ableToGo = {Player, Enemy, Wall, Ground, HeartStone}
+        self.able_to_go = {Player, Enemy, Wall, Ground, HeartStone}
+        self.lazy_collision_init = self.collision_init
 
-    def Collision(self, obj):
-        self.LazyCollisionInit()
-        self.LazyCollisionInit = lambda: None
+    def collision(self, obj):
+        self.lazy_collision_init()
+        self.lazy_collision_init = lambda: None
         type1 = type(obj)
         try:
-            return self.ArrowColliders[type1](self, obj)
+            return self.arrow_colliders[type1](self, obj)
         except KeyError:
             raise Exception('Arrow hit in ' + str(type1))
 
-    def CollideRegistrar(self, ObstacleClass):
-        def Registered(func):
-            self.ArrowColliders[ObstacleClass] = func
+    def collide_registar(self, obstacle_class):
+        def registered(func):
+            self.arrow_colliders[obstacle_class] = func
             return func
-        return Registered
+        return registered
 
-    def LazyCollisionInit(self):
-        @self.CollideRegistrar(mm.Enemy)
-        @self.CollideRegistrar(mm.Player)
-        def AliveCollision(self, alive):
-            revObjects = alive.Collision(self)
-            return (revObjects[1], revObjects[0])
+    def collision_init(self):
+        @self.collide_registar(mm.Enemy)
+        @self.collide_registar(mm.Player)
+        def alive_collision(self, alive):
+            rev_objects = alive.collision(self)
+            return (rev_objects[1], rev_objects[0])
 
-        @self.CollideRegistrar(mm.Wall)
-        def WallCollision(self, wall):
+        @self.collide_registar(mm.Wall)
+        def wall_collision(self, wall):
             if (self.damage >= wall.health):
                 return (None, None)
             else:
                 wall.health -= self.damage
                 return (None, wall)
 
-        @self.CollideRegistrar(mm.Ground)
-        def GroundCollision(self, ground):
+        @self.collide_registar(mm.Ground)
+        def ground_collision(self, ground):
             return (None, self)
 
-        @self.CollideRegistrar(mm.HeartStone)
-        def HeartStoneCollision(self, heartstone):
+        @self.collide_registar(mm.HeartStone)
+        def heart_stone_collision(self, heartstone):
             return (None, heartstone)

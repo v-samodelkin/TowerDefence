@@ -1,1 +1,1 @@
-TotalDeadEnem = 0
+total_dead_enemies = 0

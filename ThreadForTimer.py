@@ -1,7 +1,7 @@
 import threading
 
 
-def setInterval(interval):
+def set_interval(interval):
     def decorator(function):
         def wrapper(*args, **kwargs):
             stopped = threading.Event()

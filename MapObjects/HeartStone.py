@@ -1,12 +1,12 @@
 class HeartStone:
     defence = 1
 
-    def __init__(self, X, Y, player):
+    def __init__(self, x, y, player):
         self.health = 500
         self.unpretty = 0
-        self.X = X
-        self.Y = Y
+        self.x = x
+        self.y = y
         self.player = player
 
-    def Attack(self, damage):
+    def attack(self, damage):
         self.player.health -= damage

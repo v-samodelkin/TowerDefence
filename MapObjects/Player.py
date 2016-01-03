@@ -1,55 +1,53 @@
 import map_model as mm
 class Player:
-    ExtraTurns = 0
-    PlayerColliders = {}
+    extra_turns = 0
+    player_colliders = {}
     def __init__(self):
         self.unpretty = 0
         self.cooldown = 0
         self.health = 30
-        self.maxHealth = 30
+        self.max_health = 30
         self.damage = 20
-        self.ableToGo = {mm.Arrow, mm.Enemy, mm.Ground}
+        self.able_to_go = {mm.Arrow, mm.Enemy, mm.Ground}
+        self.lazy_collision_init = self.collision_init
 
-    def AbleToGo(self, where):
-        return (type(where) == mm.Ground)
-
-    def DecreaseCooldown(self, count):
+    def decrease_cooldown(self, count):
         self.cooldown -= count
         if (self.cooldown < 0):
             self.cooldown = 0
 
-    def Collision(self, obj):
-        self.LazyCollisionInit()
-        self.LazyCollisionInit = lambda: None
+    def collision(self, obj):
+        self.lazy_collision_init()
+        self.lazy_collision_init = lambda: None
         type1 = type(obj)
         try:
-            return self.PlayerColliders[type1](self, obj)
+            return self.player_colliders[type1](self, obj)
         except KeyError:
             raise Exception('Player hit in ' + str(type1))
 
-    def CollideRegistrar(self, ObstacleClass):
-        def Registered(func):
-            self.PlayerColliders[ObstacleClass] = func
+    def collide_registrar(self, obstacle_class):
+        def registered(func):
+            self.player_colliders[obstacle_class] = func
             return func
-        return Registered
+        return registered
 
 
-    def LazyCollisionInit(self):
-        @self.CollideRegistrar(mm.Enemy)
-        def EnemyCollision(self, enemy):
+    def collision_init(self):
+        @self.collide_registrar(mm.Enemy)
+        def enemy_Collision(self, enemy):
             self.health -= enemy.damage * (enemy.health / self.damage)
             if (self.health > 0):
-                enemy.OnDead()
+                enemy.on_dead()
                 return (None, self)
             else:
                 return (None, enemy)
 
-        @self.CollideRegistrar(mm.Ground)
-        def GroundCollision(self, ground):
+        @self.collide_registrar(mm.Ground)
+        def ground_Collision(self, ground):
             return (None, self)
 
-        @self.CollideRegistrar(mm.Arrow)
-        def ArrowCollision(self, arrow):
+        @self.collide_registrar(mm.Arrow)
+        def arrow_collision(self, arrow):
             if (self.health > arrow.damage):
                 self.health -= arrow.damage
                 return (None, self)
