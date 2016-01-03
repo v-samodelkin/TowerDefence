@@ -42,12 +42,12 @@ class Viewer:
 
         # Загрузка текстур
         imagesdir = "images/"
-        self.iwall = PhotoImage(file=imagesdir + "wall.png")
-        self.iground = PhotoImage(file=imagesdir + "ground1.png")
-        self.ienemy1 = PhotoImage(file=imagesdir + "enemy2v2.png")
-        self.iplayer = PhotoImage(file=imagesdir + "playerv2.png")
-        self.iarrow = PhotoImage(file=imagesdir + "ballv2.png")
-        self.iheartstone = PhotoImage(file=imagesdir + "heart.png")
+        self.iwall = PhotoImage(file=imagesdir + "wall2.png")
+        self.iground = PhotoImage(file=imagesdir + "ground3.png")
+        self.ienemy1 = PhotoImage(file=imagesdir + "enemy3.png")
+        self.iplayer = PhotoImage(file=imagesdir + "playerv3.png")
+        self.iarrow = PhotoImage(file=imagesdir + "ballv3.png")
+        self.iheartstone = PhotoImage(file=imagesdir + "heartv2.png")
 
         # Создание поля для отображения
         self.view_model = []
