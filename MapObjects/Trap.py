@@ -1,6 +1,7 @@
-__author__ = 'Vitaliy'
+from MapObjects.MapObject import MapObject
 
-class Trap:
+
+class Trap(MapObject):
     extra_turns = 0
     trap_colliders = {}
 

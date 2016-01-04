@@ -1,8 +1,9 @@
+# -*- coding: utf8 -*-
 import map_model as mm
-class Player:
-    extra_turns = 0
-    player_colliders = {}
+from MapObjects.MovingObject import MovingObject
+class Player(MovingObject):
     def __init__(self):
+        super().__init__()
         self.unpretty = 0
         self.cooldown = 0
         self.health = 30
@@ -16,21 +17,8 @@ class Player:
         if (self.cooldown < 0):
             self.cooldown = 0
 
-    def collision(self, obj):
-        self.lazy_collision_init()
-        self.lazy_collision_init = lambda: None
-        type1 = type(obj)
-        try:
-            return self.player_colliders[type1](self, obj)
-        except KeyError:
-            raise Exception('Player hit in ' + str(type1))
-
-    def collide_registrar(self, obstacle_class):
-        def registered(func):
-            self.player_colliders[obstacle_class] = func
-            return func
-        return registered
-
+    def get_info(self):
+        return "Основной персонаж"
 
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)

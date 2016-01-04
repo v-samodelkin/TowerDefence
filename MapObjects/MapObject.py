@@ -1,2 +1,3 @@
 class MapObject:
-    s = 2
+    def get_info(self):
+        return type(self).__name__

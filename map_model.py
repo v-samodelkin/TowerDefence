@@ -21,7 +21,7 @@ switcher = {
 def mid(x, y, z):
     return x <= y < z
 
-
+singleton_ground = Ground()
 def way(dx, dy):
     return switcher.get((dx, dy))
 
@@ -53,9 +53,8 @@ class MapModel:
         self.monster_way = []
         self.where_to_go = []
         self.currentTurn = 0
-        self.singleton_ground = Ground()
 
-        self.cells = [[Cell(self.singleton_ground) for y in range(height)] for x in range(width)]
+        self.cells = [[Cell(singleton_ground) for y in range(height)] for x in range(width)]
         self.monster_way = [[1e9 for y in range(height)] for x in range(width)]
         self.where_to_go = [[[] for y in range(height)] for x in range(width)]
 
@@ -72,8 +71,8 @@ class MapModel:
                 self.cells[x][y].ways[k].where = self.cells[new_x][new_y].ways[(k + 2) % 4]
 
         for i in range(castle_size):
-            self.cells[i][-castle_size].set_obj(Wall(200) if random.randint(0, 5) > 3 else self.singleton_ground)
-            self.cells[castle_size - 1][-(i + 1)].set_obj(Wall(200) if random.randint(0, 5) > 3 else self.singleton_ground)
+            self.cells[i][-castle_size].set_obj(Wall(200) if random.randint(0, 5) > 3 else singleton_ground)
+            self.cells[castle_size - 1][-(i + 1)].set_obj(Wall(200) if random.randint(0, 5) > 3 else singleton_ground)
 
         self.player = Player()
         self.cells[player_pos[0]][player_pos[1]].set_obj(self.player)
@@ -95,7 +94,7 @@ class MapModel:
             py = self.player_y()
             if (mid(0, px + dx, self.width) and mid(0, py + dy, self.height)):
                 self.cells[px + dx][py + dy].ways[way(dx, dy)].set_obj(self.player)
-                self.cells[px][py].set_obj(self.singleton_ground)
+                self.cells[px][py].set_obj(self.cells[px][py].obj.get_from_below())
     '''
     Производит выстрел в 4 стороны, затем производит ход
     '''
@@ -123,7 +122,7 @@ class MapModel:
         arrow = self.cells[x][y].obj
         if (mid(0, newx, self.width) and mid(0, newy, self.height)):
             self.cells[newx][newy].ways[way(dx, dy)].set_obj(arrow)
-        self.cells[x][y].set_obj(self.singleton_ground)
+        self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
     '''
     Обработка хода врага на клетке (x, y)
     '''
@@ -138,7 +137,7 @@ class MapModel:
             enemy = self.cells[x][y].obj
             if (mid(0, nx, self.width) and mid(0, ny, self.height)):
                 self.cells[nx][ny].ways[way(dx, dy)].set_obj(enemy)
-        self.cells[x][y].set_obj(self.singleton_ground)
+        self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
 
     '''
     Распихивание по комнатам ожидания
@@ -147,13 +146,13 @@ class MapModel:
         for x in range(self.width):
             for y in range(self.height):
                     # Arrow
-                    if ((type(self.cells[x][y].obj) == Arrow) and (turn <= Arrow.extra_turns)):
+                    if ((type(self.cells[x][y].obj) == Arrow) and (turn <= self.cells[x][y].obj.extra_turns)):
                         self.ArrowCorridorTurn(x, y)
                     # Enemy
-                    elif ((type(self.cells[x][y].obj) == Enemy) and (turn <= Enemy.extra_turns)):
+                    elif ((type(self.cells[x][y].obj) == Enemy) and (turn <= self.cells[x][y].obj.extra_turns)):
                         self.EnemyCorridorTurn(x, y)
                     # Player
-                    elif ((type(self.cells[x][y].obj) == Player) and (turn <= Player.extra_turns)):
+                    elif ((type(self.cells[x][y].obj) == Player) and (turn <= self.cells[x][y].obj.extra_turns)):
                         self.player_corridor_turn(playerDX, playerDY)
 
     '''
@@ -201,7 +200,7 @@ class MapModel:
                                 if (objects[1] != None):
                                     cell.set_obj(objects[1])
                                 else:
-                                    cell.set_obj(self.singleton_ground)
+                                    cell.set_obj(singleton_ground)
                                 if (objects[0] != None):
                                     cell.ways[i].where.set_obj(objects[0], True)
                                 cell.ways[i].set_obj(None)

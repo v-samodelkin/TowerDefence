@@ -22,11 +22,16 @@ class Viewer:
                              height=map_model.height * size_of_element)
         self.canvas.pack()
 
-        # Текстовое поле
+        # Информационное поле героя
         self.info = Text(self.top, height=10, width=20)
-        self.info.insert(END, "Информация о герое:")
-
+        self.info.insert(END, "Информация о герое")
         self.info.place(x=map_model.width * size_of_element + 30, y=40)
+
+        # Информационное поле ячейки
+        self.about = Text(self.top, height=10, width=20)
+        self.about.insert(END, "Информация об ячейке")
+        self.about.place(x=map_model.width * size_of_element + 30, y=210)
+        self.about_obj = self.model.cells[0][0].obj
 
         # EnemyLvlProgressBar
         self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=map_model.height * size_of_element - 10,
@@ -48,6 +53,7 @@ class Viewer:
         self.iplayer = PhotoImage(file=imagesdir + "playerv3.png")
         self.iarrow = PhotoImage(file=imagesdir + "ballv3.png")
         self.iheartstone = PhotoImage(file=imagesdir + "heartv2.png")
+        self.itrap = PhotoImage(file=imagesdir + "trap.png")
 
         # Создание поля для отображения
         self.view_model = []
@@ -97,6 +103,7 @@ class Viewer:
         self.enemy_lvl_progress_bar["value"] = st.total_dead_enemies
         self.health_progress_bar["value"] = self.model.player.health
         self.update_text_box()
+        self.update_info_box()
         self.top.update()
 
     def update_text_box(self):
@@ -104,6 +111,14 @@ class Viewer:
         self.info.insert(END, "Информация о герое\n")
         self.info.insert(END, "Очков: {0}\n".format(st.total_dead_enemies))
         self.info.insert(END, "Здоровье: {0} hp\n".format(self.model.player.health))
+
+    def update_info_box(self):
+        self.about.delete(1.0, END)
+        self.about.insert(END, self.about_obj.get_info())
+
+    def show_info_about_cell(self, x, y):
+        self.about_obj = self.model.cells[x][y].obj
+        self.update_info_box()
 
 def main():
     controller = tdc.Controller(Viewer(24, mm.MapModel(32, 32)))

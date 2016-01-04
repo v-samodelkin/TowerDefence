@@ -8,9 +8,15 @@ class Controller:
         self.stop = self.function()
         self.action = self.model.turn
 
+    def callback(self, event):
+        x = event.x // self.viewer.size_of_element
+        y = event.y // self.viewer.size_of_element
+        self.viewer.show_info_about_cell(x, y)
     def start(self):
         self.viewer.view_map_model()
         self.viewer.top.bind("<Key>", self.key)
+        self.viewer.top.bind("<Button-1>", self.callback)
+
 
     def get_action_by_key(self, argument):
         switcher = {
