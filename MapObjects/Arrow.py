@@ -6,6 +6,7 @@ import map_model as mm
 class Arrow(MovingObject):
     def __init__(self, damage, dx, dy):
         super().__init__()
+        self.turns = {2, 4}
         self.extra_turns = 1
         self.damage = damage
         self.dx = dx

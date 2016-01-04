@@ -33,7 +33,7 @@ class Controller:
         self.action = self.get_action_by_key(event.char)
         self.viewer.view_map_model()
 
-    @set_interval(.3)
+    @set_interval(.1)
     def function(self):
         self.action()
         self.viewer.view_map_model()
