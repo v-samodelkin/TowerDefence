@@ -9,3 +9,4 @@ class Wall(MapObject):
 
     def get_info(self):
         return "Стена \nПрочность: {0}".format(self.health)
+

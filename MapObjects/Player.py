@@ -4,7 +4,7 @@ from MapObjects.MovingObject import MovingObject
 class Player(MovingObject):
     def __init__(self):
         super().__init__()
-        self.unpretty = 0
+        self.unpretty = 200
         self.cooldown = 0
         self.health = 30
         self.max_health = 30
@@ -19,6 +19,9 @@ class Player(MovingObject):
 
     def get_info(self):
         return "Основной персонаж"
+
+    def fired(self):
+        self.cooldown = 3
 
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)

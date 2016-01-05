@@ -6,7 +6,7 @@ import map_model as mm
 class Arrow(MovingObject):
     def __init__(self, damage, dx, dy):
         super().__init__()
-        self.turns = {2, 4}
+        self.turns = {2, 5}
         self.extra_turns = 1
         self.damage = damage
         self.dx = dx
@@ -40,3 +40,4 @@ class Arrow(MovingObject):
 
     def get_info(self):
         return "Огненный шар\nУрон: {0}".format(self.damage)
+
