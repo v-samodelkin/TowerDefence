@@ -4,7 +4,7 @@ from MapObjects.MovingObject import MovingObject
 class Player(MovingObject):
     def __init__(self):
         super().__init__()
-        self.unpretty = 50
+        self.unpretty = 101
         self.cooldown = 0
         self.health = 30
         self.max_health = 30

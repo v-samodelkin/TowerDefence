@@ -4,7 +4,7 @@ from tkinter import ttk
 import map_model as mm
 import tower_defence_controller as tdc
 import Statistic as st
-
+import Info
 
 class Viewer:
     def __init__(self, size_of_element, width, height):
@@ -32,6 +32,11 @@ class Viewer:
         self.about.insert(END, "Информация об ячейке")
         self.about.place(x=self.model.width * size_of_element + 30, y=210)
         self.about_obj = self.model.cells[0][0].obj
+
+        # Инструкуция
+        self.readme = Text(self.top, height=10, width=20)
+        self.readme.insert(END, Info.get_readme())
+        self.readme.place(x=self.model.width * size_of_element + 30, y=380)
 
         # EnemyLvlProgressBar
         self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=self.model.height * size_of_element - 10,
