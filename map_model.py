@@ -12,6 +12,8 @@ from MapObjects.Wall import Wall
 from MapObjects.Trap import Trap
 from MapObjects.WalkableStructure import WalkableStructure
 import Statistic
+
+
 switcher = {
     (0, -1): 2,
     (1, 0): 3,
@@ -19,13 +21,16 @@ switcher = {
     (-1, 0): 1,
 }
 
+singleton_ground = Ground()
+
 
 def mid(x, y, z):
     return x <= y < z
 
-singleton_ground = Ground()
+
 def way(dx, dy):
     return switcher.get((dx, dy))
+
 
 def not_on_game_end(func):
     def wrapper(map_model, *args, **kwargs):
@@ -33,22 +38,19 @@ def not_on_game_end(func):
             func(map_model, *args, **kwargs)
     return wrapper
 
+
 class MapModel:
     constdx = [0, 1, 0, -1]
     constdy = [1, 0, -1, 0]
 
     def player_x(self):
-        for xy in itertools.product(range(self.width), range(self.height)):
-            x = xy[0]
-            y = xy[1]
-            if (type(self.cells[x][y].obj) == Player):
+        for (x, y) in itertools.product(range(self.width), range(self.height)):
+            if isinstance(self.cells[x][y].obj, Player):
                 return x
 
     def player_y(self):
-        for xy in itertools.product(range(self.width), range(self.height)):
-            x = xy[0]
-            y = xy[1]
-            if (type(self.cells[x][y].obj) == Player):
+        for (x, y) in itertools.product(range(self.width), range(self.height)):
+            if isinstance(self.cells[x][y].obj, Player):
                 return y
 
     def __init__(self, width, height, visualizer, on_game_over, castle_size=8, player_pos=(3, 4), heartstone_pos=(3, -3)):
@@ -73,10 +75,7 @@ class MapModel:
         cdx = self.constdx
         cdy = [-y for y in self.constdy]
 
-        for xyk in itertools.product(range(width), range(height), range(4)):
-            x = xyk[0]
-            y = xyk[1]
-            k = xyk[2]
+        for (x, y, k) in itertools.product(range(width), range(height), range(4)):
             new_x = x + cdx[k]
             new_y = y + cdy[k]
             if (mid(0, new_x, self.width) and mid(0, new_y, self.height)):
@@ -96,11 +95,11 @@ class MapModel:
                       self.on_game_over, self.castle_size, self.player_pos,
                       self.heartstone_pos)
 
-    '''
-    Передвигает игрока на заднное смещение, предварительно произведя ход
-    '''
     @not_on_game_end
     def player_move(self, dx, dy):
+        '''
+        Передвигает игрока на заднное смещение, предварительно произведя ход
+        '''
         px = self.player_x()
         py = self.player_y()
         if (mid(0, px + dx, self.width) and mid(0, py + dy, self.height)):
@@ -113,11 +112,12 @@ class MapModel:
             if (mid(0, px + dx, self.width) and mid(0, py + dy, self.height)):
                 self.cells[px + dx][py + dy].ways[way(dx, dy)].set_obj(self.player)
                 self.cells[px][py].set_obj(self.cells[px][py].obj.get_from_below())
-    '''
-    Производит выстрел в 4 стороны, затем производит ход
-    '''
+
     @not_on_game_end
     def player_fire(self, damage):
+        '''
+        Производит выстрел в 4 стороны, затем производит ход
+        '''
         if (self.player.cooldown == 0):
             self.player.fired()
             for i in range(4):
@@ -128,10 +128,10 @@ class MapModel:
                     self.cells[newX][newY].ways[way(self.constdx[i], self.constdy[i])].set_obj(arrow)
         self.turn()
 
-    '''
-    Обработка хода стрелы на клетке (x, y)
-    '''
     def ArrowCorridorTurn(self, x, y):
+        '''
+        Обработка хода стрелы на клетке (x, y)
+        '''
         dx = self.cells[x][y].obj.dx
         dy = self.cells[x][y].obj.dy
         newx = dx + x
@@ -142,10 +142,10 @@ class MapModel:
         if (mid(0, newx, self.width) and mid(0, newy, self.height)):
             self.cells[newx][newy].ways[way(dx, dy)].set_obj(arrow)
 
-    '''
-    Обработка хода врага на клетке (x, y)
-    '''
     def EnemyCorridorTurn(self, x, y):
+        '''
+        Обработка хода врага на клетке (x, y)
+        '''
         countOfWays = len(self.where_to_go[x][y])
         if countOfWays > 0:
             var = random.randint(0, countOfWays - 1)
@@ -159,11 +159,10 @@ class MapModel:
             if (mid(0, nx, self.width) and mid(0, ny, self.height)):
                 self.cells[nx][ny].ways[way(dx, dy)].set_obj(enemy)
 
-
-    '''
-    Распихивание по комнатам ожидания
-    '''
     def InitWainingRooms(self, playerDX, playerDY, turn):
+        '''
+        Распихивание по комнатам ожидания
+        '''
         for x in range(self.width):
             for y in range(self.height):
                     # Arrow
@@ -176,10 +175,10 @@ class MapModel:
                     elif ((type(self.cells[x][y].obj) == Player) and (turn in self.cells[x][y].obj.turns)):
                         self.player_corridor_turn(playerDX, playerDY)
 
-    '''
-    Генерация врагов
-    '''
     def generate_enemies(self, count):
+        '''
+        Генерация врагов
+        '''
         for cnt in range(count):
             enemyX = random.randint(self.width - 3, self.width - 1)
             enemyY = random.randint(0, 2)
@@ -192,10 +191,10 @@ class MapModel:
             if (type(self.cells[enemyX][enemyY].obj) == Ground):
                 self.cells[enemyX][enemyY].set_obj(Enemy(5, self.width, self.height))
 
-    '''
-    Обработка комнат ожидания
-    '''
     def deal_with_waiting_rooms(self):
+        '''
+        Обработка комнат ожидания
+        '''
         anybody_waiting = True
         while anybody_waiting:
             anybody_waiting = False
@@ -227,28 +226,30 @@ class MapModel:
                                 cell.ways[i].set_obj(None)
                             else:
                                 cell.ways[i].obj, cell.ways[i].where.obj = None, cell.ways[i].obj
-    '''
-    Вычисление основных этапов хода
-    '''
+
     @not_on_game_end
     def turn(self, player_dx=0, player_dy=0):
+        '''
+        Вычисление основных этапов хода
+        '''
         if (self.step == 0):
             self.pre_turn()
         self.rooms_turn(player_dx, player_dy, self.step)
         self.step = (self.step + 1) % 6
-    '''
-    Установка башни на клетку
-    '''
+
     @not_on_game_end
     def player_place(self, what):
+        '''
+        Установка башни на клетку
+        '''
         if not isinstance(self.player.from_below, WalkableStructure):
             self.player.from_below = Trap(10, 15)
             self.turn()
 
-    '''
-    Настройка перед серией из 6 тиков
-    '''
     def pre_turn(self):
+        '''
+        Настройка перед серией из 6 тиков
+        '''
         # Preload
         self.currentTurn += 1
         print("Turn: " + str(self.currentTurn))
@@ -260,10 +261,11 @@ class MapModel:
         # GenerateEnemies
         if (self.currentTurn % 4 == 0):
             self.generate_enemies(1)
-    '''
-    Один тик
-    '''
+
     def rooms_turn(self, player_dx, player_dy, turn):
+        '''
+        Один тик
+        '''
         # Распихивание по комнатам ожидания
         self.InitWainingRooms(player_dx, player_dy, turn)
 
@@ -271,10 +273,10 @@ class MapModel:
         self.deal_with_waiting_rooms()
         self.visualizer()
 
-    '''
-    Поиск пути до Камня жизни
-    '''
     def find_way(self, X, Y):
+        '''
+        Поиск пути до Камня жизни
+        '''
         # Preload
         for i in range(self.width):
             for j in range(self.height):
@@ -312,12 +314,11 @@ class MapModel:
                     elif weight == self.monster_way[newX][newY]:
                         self.where_to_go[newX][newY].append((curX, curY))
 
-    '''
-    Проверка на окончание игры
-    '''
     def check_game_end(self):
+        '''
+        Проверка на окончание игры
+        '''
         if (self.player.is_dead()):
             self.on_game_over()
             return True
         return False
-

@@ -60,5 +60,5 @@ class Enemy(MovingObject):
                 self.from_below = structure
                 return (None, self)
             else:
+                self.on_dead()
                 return (None, structure)
-

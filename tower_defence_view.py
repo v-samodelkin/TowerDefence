@@ -6,6 +6,7 @@ import tower_defence_controller as tdc
 import Statistic as st
 import Info
 
+
 class Viewer:
     def __init__(self, size_of_element, width, height):
         # Настройка Style
@@ -39,14 +40,12 @@ class Viewer:
         self.readme.place(x=self.model.width * size_of_element + 30, y=380)
 
         # EnemyLvlProgressBar
-        self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=self.model.height * size_of_element - 10,
-                                                   mode='determinate', style="blue.Vertical.TProgressbar")
+        self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=self.model.height * size_of_element - 10, mode='determinate', style="blue.Vertical.TProgressbar")
         self.enemy_lvl_progress_bar.place(x=self.model.width * size_of_element + 5, y=5)
         self.enemy_lvl_progress_bar["maximum"] = 15
 
         # HealthProgressBar
-        self.health_progress_bar = ttk.Progressbar(orient=HORIZONTAL, length=160, mode='determinate',
-                                                 style="red.Horizontal.TProgressbar")
+        self.health_progress_bar = ttk.Progressbar(orient=HORIZONTAL, length=160, mode='determinate', style="red.Horizontal.TProgressbar")
         self.health_progress_bar.place(x=self.model.width * size_of_element + 35, y=5)
         self.health_progress_bar["maximum"] = self.model.player.max_health
 
@@ -130,11 +129,11 @@ class Viewer:
     def show_game_over_screen(self):
         self.canvas.create_image(16 * 24, 16 * 24, image=self.igameover)
 
+
 def main():
     init()
 
 
-controller = None
 def init():
     controller = tdc.Controller(Viewer(24, 32, 32), init)
     controller.start()

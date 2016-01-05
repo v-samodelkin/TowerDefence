@@ -1,6 +1,7 @@
 import map_model as mm
 from MapObjects.MapObject import MapObject
 
+
 class MovingObject(MapObject):
     def __init__(self):
         self.turns = {3}
@@ -20,7 +21,7 @@ class MovingObject(MapObject):
         try:
             return self.colliders[type1](self, obj)
         except KeyError:
-            raise Exception(str(type(self))+ ' hit in ' + str(type1))
+            raise Exception(str(type(self)) + ' hit in ' + str(type1))
 
     def collide_registrar(self, obstacle_class):
         def registered(func):

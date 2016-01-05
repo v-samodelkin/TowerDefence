@@ -49,4 +49,3 @@ class Arrow(MovingObject):
 
     def get_info(self):
         return "Огненный шар\nУрон: {0}".format(self.damage)
-

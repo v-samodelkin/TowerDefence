@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 from MapObjects.MapObject import MapObject
-from MapObjects.WalkableStructure import WalkableStructure
 
 
 class Wall(MapObject):
@@ -11,4 +10,3 @@ class Wall(MapObject):
 
     def get_info(self):
         return "Стена \nПрочность: {0}".format(self.health)
-

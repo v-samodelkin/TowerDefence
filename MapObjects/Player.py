@@ -1,6 +1,8 @@
 # -*- coding: utf8 -*-
 import map_model as mm
 from MapObjects.MovingObject import MovingObject
+
+
 class Player(MovingObject):
     def __init__(self):
         super().__init__()
