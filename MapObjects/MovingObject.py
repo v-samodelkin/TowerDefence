@@ -37,7 +37,7 @@ class MovingObject(MapObject):
         return mm.singleton_ground
 
     def get_from_below(self):
-        return self.from_below if self.from_below else mm.singleton_ground
+        return self.from_below
 
     def is_dead(self):
         return self.health <= 0

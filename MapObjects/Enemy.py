@@ -10,7 +10,7 @@ class Enemy(MovingObject):
 
     def __init__(self, health, width, height):
         super().__init__()
-        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone}
+        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone, mm.Trap}
         self.unpretty = 10000
         self.damage = 1
         self.health = health
@@ -41,7 +41,7 @@ class Enemy(MovingObject):
                 return (None, self)
             else:
                 self.on_dead()
-                return (None, None)
+                return (None, self.get_from_below())
 
         @self.collide_registrar(mm.Player)
         def player_collide(self, player):
@@ -52,4 +52,13 @@ class Enemy(MovingObject):
                 return (None, player)
             else:
                 return (None, self)
+
+        @self.collide_registrar(mm.Trap)
+        def walkable_structure_collide(self, structure):
+            structure.act_on_movable(self)
+            if (self.health > 0):
+                self.from_below = structure
+                return (None, self)
+            else:
+                return (None, structure)
 

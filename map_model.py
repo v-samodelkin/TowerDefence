@@ -9,6 +9,8 @@ from MapObjects.Ground import Ground
 from MapObjects.HeartStone import HeartStone
 from MapObjects.Player import Player
 from MapObjects.Wall import Wall
+from MapObjects.Trap import Trap
+from MapObjects.WalkableStructure import WalkableStructure
 import Statistic
 switcher = {
     (0, -1): 2,
@@ -135,9 +137,11 @@ class MapModel:
         newx = dx + x
         newy = dy + y
         arrow = self.cells[x][y].obj
+        self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
+        arrow.from_below = None
         if (mid(0, newx, self.width) and mid(0, newy, self.height)):
             self.cells[newx][newy].ways[way(dx, dy)].set_obj(arrow)
-        self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
+
     '''
     Обработка хода врага на клетке (x, y)
     '''
@@ -150,9 +154,11 @@ class MapModel:
             dx = nx - x
             dy = ny - y
             enemy = self.cells[x][y].obj
+            self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
+            enemy.from_below = None
             if (mid(0, nx, self.width) and mid(0, ny, self.height)):
                 self.cells[nx][ny].ways[way(dx, dy)].set_obj(enemy)
-        self.cells[x][y].set_obj(self.cells[x][y].obj.get_from_below())
+
 
     '''
     Распихивание по комнатам ожидания
@@ -191,7 +197,7 @@ class MapModel:
     '''
     def deal_with_waiting_rooms(self):
         anybody_waiting = True
-        while (anybody_waiting):
+        while anybody_waiting:
             anybody_waiting = False
             for x in range(self.width):
                 for y in range(self.height):
@@ -230,7 +236,18 @@ class MapModel:
             self.pre_turn()
         self.rooms_turn(player_dx, player_dy, self.step)
         self.step = (self.step + 1) % 6
+    '''
+    Установка башни на клетку
+    '''
+    @not_on_game_end
+    def player_place(self, what):
+        if not isinstance(self.player.from_below, WalkableStructure):
+            self.player.from_below = Trap(10, 15)
+            self.turn()
 
+    '''
+    Настройка перед серией из 6 тиков
+    '''
     def pre_turn(self):
         # Preload
         self.currentTurn += 1
@@ -243,7 +260,9 @@ class MapModel:
         # GenerateEnemies
         if (self.currentTurn % 4 == 0):
             self.generate_enemies(1)
-
+    '''
+    Один тик
+    '''
     def rooms_turn(self, player_dx, player_dy, turn):
         # Распихивание по комнатам ожидания
         self.InitWainingRooms(player_dx, player_dy, turn)
@@ -252,6 +271,9 @@ class MapModel:
         self.deal_with_waiting_rooms()
         self.visualizer()
 
+    '''
+    Поиск пути до Камня жизни
+    '''
     def find_way(self, X, Y):
         # Preload
         for i in range(self.width):
@@ -290,6 +312,9 @@ class MapModel:
                     elif weight == self.monster_way[newX][newY]:
                         self.where_to_go[newX][newY].append((curX, curY))
 
+    '''
+    Проверка на окончание игры
+    '''
     def check_game_end(self):
         if (self.player.is_dead()):
             self.on_game_over()

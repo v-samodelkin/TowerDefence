@@ -7,4 +7,5 @@ class Cell():
         self.ways = [WaitingRoom(None, self) for x in range(4)]
 
     def set_obj(self, obj):
+        obj.from_below = self.obj.get_from_below()
         self.obj = obj

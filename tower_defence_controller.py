@@ -7,7 +7,6 @@ class Controller:
         self.model = viewer.model
         self.stop = self.function()
         self.action = self.model.turn
-        self.aa = 0
 
     def callback(self, event):
         x = event.x // self.viewer.size_of_element
@@ -28,6 +27,7 @@ class Controller:
             'd': (lambda: self.model.player_move(1, 0)),
             'e': (lambda: self.model.turn()),
             ' ': (lambda: self.model.player_fire(10)),
+            '1': (lambda: self.model.player_place(1)),
         }
         return switcher.get(argument, lambda: None)
 
@@ -58,6 +58,5 @@ class Controller:
     @set_interval(.01)
     def function(self):
         self.action()
-        self.aa += 1
         if self.model.check_game_end():
             self.stop.set()

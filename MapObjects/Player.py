@@ -4,12 +4,12 @@ from MapObjects.MovingObject import MovingObject
 class Player(MovingObject):
     def __init__(self):
         super().__init__()
-        self.unpretty = 200
+        self.unpretty = 50
         self.cooldown = 0
         self.health = 30
         self.max_health = 30
         self.damage = 20
-        self.able_to_go = {mm.Arrow, mm.Enemy, mm.Ground}
+        self.able_to_go = {mm.Arrow, mm.Enemy, mm.Ground, mm.Trap}
         self.lazy_collision_init = self.collision_init
 
     def decrease_cooldown(self, count):
@@ -44,3 +44,8 @@ class Player(MovingObject):
                 return (None, self)
             else:
                 return (None, None)
+
+        @self.collide_registrar(mm.Trap)
+        def walkable_structure_collide(self, structure):
+            self.from_below = structure
+            return (None, self)

@@ -85,6 +85,7 @@ class Viewer:
             mm.Arrow: self.iarrow,
             mm.HeartStone: self.iheartstone,
             mm.Enemy: self.ienemy1,
+            mm.Trap: self.itrap,
         }
         return switcher.get(type(argument), None)
 
