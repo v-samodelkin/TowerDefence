@@ -28,10 +28,10 @@ class Arrow(MovingObject):
 
         @self.collide_registrar(mm.Wall)
         def wall_collision(self, wall):
-            if (self.damage >= wall.health):
+            wall.health -= self.damage
+            if (wall.health <= 0):
                 return (None, None)
             else:
-                wall.health -= self.damage
                 return (None, wall)
 
         @self.collide_registrar(mm.Ground)

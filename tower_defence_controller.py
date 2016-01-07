@@ -18,6 +18,8 @@ class Controller:
             'e': (lambda: self.model.turn()),
             ' ': (lambda: self.model.player_fire(10)),
             '1': (lambda: self.model.player_place(1)),
+            '2': (lambda: self.model.player_place(2)),
+            '3': (lambda: self.model.player_place(3)),
         }
         self.do_action = {
             'r': (lambda: self.try_restart()),
@@ -41,6 +43,7 @@ class Controller:
 
     def try_restart(self):
         if self.model.check_game_end():
+            self.viewer.before_restart()
             self.stop.set()
             self.stop.clear()
             self.viewer.view_map_model(hard=True)

@@ -11,7 +11,7 @@ from MapObjects.Player import Player
 from MapObjects.Wall import Wall
 from MapObjects.Trap import Trap
 from MapObjects.WalkableStructure import WalkableStructure
-import Statistic
+import Statistic as st
 
 
 switcher = {
@@ -54,7 +54,7 @@ class MapModel:
                 return y
 
     def __init__(self, width, height, visualizer, on_game_over, castle_size=8, player_pos=(3, 4), heartstone_pos=(3, -3)):
-        Statistic.total_dead_enemies = 0
+        st.total_dead_enemies = 0
         self.width = width
         self.height = height
         self.cells = []
@@ -82,8 +82,8 @@ class MapModel:
                 self.cells[x][y].ways[k].where = self.cells[new_x][new_y].ways[(k + 2) % 4]
 
         for i in range(castle_size):
-            self.cells[i][-castle_size].set_obj(Wall(200) if random.randint(0, 5) > 3 else singleton_ground)
-            self.cells[castle_size - 1][-(i + 1)].set_obj(Wall(200) if random.randint(0, 5) > 3 else singleton_ground)
+            self.cells[i][-castle_size].set_obj(Wall(200) if random.randint(0, 5) > 2 else singleton_ground)
+            self.cells[castle_size - 1][-(i + 1)].set_obj(Wall(200) if random.randint(0, 5) > 2 else singleton_ground)
 
         self.player = Player()
         self.cells[player_pos[0]][player_pos[1]].set_obj(self.player)
@@ -242,9 +242,30 @@ class MapModel:
         '''
         Установка башни на клетку
         '''
-        if not isinstance(self.player.from_below, WalkableStructure):
-            self.player.from_below = Trap(10, 15)
-            self.turn()
+        switcher = {
+            1: self.place_trap,
+            2: self.place_barrage,
+            3: self.place_spiral,
+        }
+        switcher.get(what, lambda: None)()
+        self.turn()
+
+    def place_trap(self):
+        if isinstance(self.player.from_below, Ground):
+            trap = Trap(10, 15)
+            if trap.cost <= st.player_gold:
+                st.player_gold -= trap.cost
+                self.player.from_below = trap
+
+    def place_barrage(self):
+        if isinstance(self.player.from_below, Ground):
+            barrage = Wall(20)
+            if barrage.cost <= st.player_gold:
+                st.player_gold -= barrage.cost
+                self.player.from_below = barrage
+
+    def place_spiral(self):
+        pass
 
     def pre_turn(self):
         '''

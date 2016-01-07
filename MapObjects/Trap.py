@@ -9,6 +9,7 @@ class Trap(MapObject, WalkableStructure):
 
     def __init__(self, health, damage):
         super().__init__()
+        self.cost = 40
         self.unpretty = 100
         self.health = health
         self.damage = damage
@@ -20,3 +21,4 @@ class Trap(MapObject, WalkableStructure):
 
     def get_info(self):
         return "Шипастая ловушка\nУрон: {0}\nПрочность: {1}".format(self.damage, self.health)
+

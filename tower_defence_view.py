@@ -27,17 +27,26 @@ class Viewer:
         self.info = Text(self.top, height=10, width=20)
         self.info.insert(END, "Информация о герое")
         self.info.place(x=self.model.width * size_of_element + 30, y=40)
+        self.info.config(state=DISABLED)
 
         # Информационное поле ячейки
         self.about = Text(self.top, height=10, width=20)
         self.about.insert(END, "Информация об ячейке")
         self.about.place(x=self.model.width * size_of_element + 30, y=210)
         self.about_obj = self.model.cells[0][0].obj
+        self.about.config(state=DISABLED)
 
         # Инструкуция
         self.readme = Text(self.top, height=10, width=20)
         self.readme.insert(END, Info.get_readme())
         self.readme.place(x=self.model.width * size_of_element + 30, y=380)
+        self.readme.config(state=DISABLED)
+
+        # Рекорды
+        self.records = Text(self.top, height=10, width=20)
+        self.records.insert(END, Info.get_records())
+        self.records.place(x=self.model.width * size_of_element + 30, y=550)
+        self.records.config(state=DISABLED)
 
         # EnemyLvlProgressBar
         self.enemy_lvl_progress_bar = ttk.Progressbar(orient=VERTICAL, length=self.model.height * size_of_element - 10, mode='determinate', style="blue.Vertical.TProgressbar")
@@ -51,7 +60,8 @@ class Viewer:
 
         # Загрузка текстур
         imagesdir = "images/"
-        self.iwall = PhotoImage(file=imagesdir + "wall2.png")
+        self.ibigwall = PhotoImage(file=imagesdir + "wall2.png")
+        self.ismallwall = PhotoImage(file=imagesdir + "Barrage.png")
         self.iground = PhotoImage(file=imagesdir + "ground3.png")
         self.ienemy1 = PhotoImage(file=imagesdir + "enemy3.png")
         self.iplayer = PhotoImage(file=imagesdir + "playerv3.png")
@@ -59,6 +69,7 @@ class Viewer:
         self.iheartstone = PhotoImage(file=imagesdir + "heartv2.png")
         self.itrap = PhotoImage(file=imagesdir + "trap.png")
         self.igameover = PhotoImage(file=imagesdir + "game_over.png")
+        self.ispiralgenerator = PhotoImage(file=imagesdir + "spiral_generator.png")
 
         # Создание поля для отображения
         self.view_model = []
@@ -83,16 +94,18 @@ class Viewer:
 
     def element_to_image(self, argument):
         switcher = {
-            mm.Wall: self.iwall,
-            mm.Ground: self.iground,
-            mm.Player: self.iplayer,
-            mm.Arrow: self.iarrow,
-            mm.HeartStone: self.iheartstone,
-            mm.Enemy: self.ienemy1,
-            mm.Trap: self.itrap,
+            mm.Ground: lambda: self.iground,
+            mm.Player: lambda: self.iplayer,
+            mm.Arrow: lambda: self.iarrow,
+            mm.HeartStone: lambda: self.iheartstone,
+            mm.Enemy: lambda: self.ienemy1,
+            mm.Trap: lambda: self.itrap,
+            mm.Wall: lambda: self.wall_image(argument),
         }
-        return switcher.get(type(argument), None)
+        return switcher.get(type(argument), lambda: None)()
 
+    def wall_image(self, wall):
+        return self.ibigwall if wall.max_health > 100 else self.ismallwall
     '''
     Производит перерисовку поля в связи с произошедшими изменениями
     '''
@@ -113,14 +126,25 @@ class Viewer:
         self.top.update()
 
     def update_text_box(self):
+        self.info.config(state=NORMAL)
         self.info.delete(1.0, END)
         self.info.insert(END, "Информация о герое\n")
         self.info.insert(END, "Очков: {0}\n".format(st.total_dead_enemies))
         self.info.insert(END, "Здоровье: {0} hp\n".format(self.model.player.health))
+        self.info.insert(END, "Золото: {0} hp\n".format(st.player_gold))
+        self.info.config(state=DISABLED)
 
     def update_info_box(self):
+        self.about.config(state=NORMAL)
         self.about.delete(1.0, END)
         self.about.insert(END, self.about_obj.get_info())
+        self.about.config(state=DISABLED)
+
+    def update_records_box(self):
+        self.records.config(state=NORMAL)
+        self.records.delete(1.0, END)
+        self.records.insert(END, Info.get_records())
+        self.records.config(state=DISABLED)
 
     def show_info_about_cell(self, x, y):
         self.about_obj = self.model.cells[x][y].obj
@@ -128,6 +152,11 @@ class Viewer:
 
     def show_game_over_screen(self):
         self.canvas.create_image(16 * 24, 16 * 24, image=self.igameover)
+
+    def before_restart(self):
+        with open("records.txt", "a") as f:
+            f.write("{0}\n".format(st.total_dead_enemies))
+        self.update_records_box()
 
 
 def main():

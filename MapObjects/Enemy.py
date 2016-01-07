@@ -10,7 +10,8 @@ class Enemy(MovingObject):
 
     def __init__(self, health, width, height):
         super().__init__()
-        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone, mm.Trap}
+        self.gold = 2
+        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone, mm.Trap, mm.Wall}
         self.unpretty = 10000
         self.damage = 1
         self.health = health
@@ -19,6 +20,7 @@ class Enemy(MovingObject):
 
     def on_dead(self):
         st.total_dead_enemies += 1
+        st.player_gold += self.gold
         return self.get_from_below()
 
     def get_info(self):
@@ -54,11 +56,21 @@ class Enemy(MovingObject):
                 return (None, self)
 
         @self.collide_registrar(mm.Trap)
-        def walkable_structure_collide(self, structure):
+        def trap_collide(self, structure):
             structure.act_on_movable(self)
             if (self.health > 0):
                 self.from_below = structure
                 return (None, self)
             else:
                 self.on_dead()
-                return (None, structure)
+                return (None, structure.check())
+
+        @self.collide_registrar(mm.Wall)
+        def wall_collide(self, wall):
+            damage = self.damage * self.health
+            if (damage > wall.health):
+                self.health -= wall.health / self.damage
+                return None, self
+            else:
+                wall.health -= damage
+                return None, wall.check()
