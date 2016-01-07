@@ -11,7 +11,7 @@ class Enemy(MovingObject):
     def __init__(self, health, width, height):
         super().__init__()
         self.gold = 2
-        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone, mm.Trap, mm.Wall}
+        self.able_to_go = {mm.Player, mm.Ground, mm.Arrow, mm.HeartStone, mm.Trap, mm.Wall, mm.SpiralTower}
         self.unpretty = 10000
         self.damage = 1
         self.health = health
@@ -65,6 +65,7 @@ class Enemy(MovingObject):
                 self.on_dead()
                 return (None, structure.check())
 
+        @self.collide_registrar(mm.SpiralTower)
         @self.collide_registrar(mm.Wall)
         def wall_collide(self, wall):
             damage = self.damage * self.health

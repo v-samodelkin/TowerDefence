@@ -10,7 +10,7 @@ from MapObjects.HeartStone import HeartStone
 from MapObjects.Player import Player
 from MapObjects.Wall import Wall
 from MapObjects.Trap import Trap
-from MapObjects.WalkableStructure import WalkableStructure
+from MapObjects.SpiralTower import SpiralTower
 import Statistic as st
 
 
@@ -113,6 +113,22 @@ class MapModel:
                 self.cells[px + dx][py + dy].ways[way(dx, dy)].set_obj(self.player)
                 self.cells[px][py].set_obj(self.cells[px][py].obj.get_from_below())
 
+
+    def spiral_tower_turn(self, x, y):
+        '''
+        Производит выстрел
+        '''
+        tower = self.cells[x][y].obj
+        tower.cooldown -= 1
+        if (tower.cooldown == 0):
+            tower.fired()
+            i = tower.direction
+            newX = x + self.constdx[i]
+            newY = y + self.constdy[i]
+            if (mid(0, newX, self.width) and mid(0, newY, self.height)):
+                arrow = Arrow(tower.damage, self.constdx[i], self.constdy[i])
+                self.cells[newX][newY].ways[way(self.constdx[i], self.constdy[i])].set_obj(arrow)
+
     @not_on_game_end
     def player_fire(self, damage):
         '''
@@ -132,8 +148,8 @@ class MapModel:
         '''
         Обработка хода стрелы на клетке (x, y)
         '''
-        dx = self.cells[x][y].obj.dx
-        dy = self.cells[x][y].obj.dy
+        dx = self.cells[x][y].obj.get_dx()
+        dy = self.cells[x][y].obj.get_dy()
         newx = dx + x
         newy = dy + y
         arrow = self.cells[x][y].obj
@@ -166,15 +182,18 @@ class MapModel:
         for x in range(self.width):
             for y in range(self.height):
                     # Arrow
-                    if ((type(self.cells[x][y].obj) == Arrow) and (turn in self.cells[x][y].obj.turns)):
+                    if isinstance(self.cells[x][y].obj, Arrow) and (turn in self.cells[x][y].obj.turns):
                         self.ArrowCorridorTurn(x, y)
                     # Enemy
-                    elif ((type(self.cells[x][y].obj) == Enemy) and (turn in self.cells[x][y].obj.turns)):
+                    elif isinstance(self.cells[x][y].obj, Enemy) and (turn in self.cells[x][y].obj.turns):
                         self.EnemyCorridorTurn(x, y)
                     # Player
-                    elif ((type(self.cells[x][y].obj) == Player) and (turn in self.cells[x][y].obj.turns)):
+                    elif isinstance(self.cells[x][y].obj, Player) and (turn in self.cells[x][y].obj.turns):
                         self.player_corridor_turn(playerDX, playerDY)
-
+                    elif isinstance(self.cells[x][y].obj, SpiralTower) and (turn in self.cells[x][y].obj.turns):
+                        self.spiral_tower_turn(x, y)
+                        checked = self.cells[x][y].obj.check()
+                        self.cells[x][y].obj = checked if checked else singleton_ground
     def generate_enemies(self, count):
         '''
         Генерация врагов
@@ -265,7 +284,11 @@ class MapModel:
                 self.player.from_below = barrage
 
     def place_spiral(self):
-        pass
+        if isinstance(self.player.from_below, Ground):
+            spiral = SpiralTower()
+            if spiral.cost <= st.player_gold:
+                st.player_gold -= spiral.cost
+                self.player.from_below = spiral
 
     def pre_turn(self):
         '''

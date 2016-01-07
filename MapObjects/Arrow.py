@@ -12,8 +12,15 @@ class Arrow(MovingObject):
         self.dx = dx
         self.dy = dy
         self.unpretty = 150
-        self.able_to_go = {mm.Player, mm.Enemy, mm.Wall, mm.Ground, mm.HeartStone, mm.Trap}
+        self.able_to_go = {mm.Player, mm.Enemy, mm.Wall, mm.Ground, mm.HeartStone, mm.Trap, mm.Arrow, mm.SpiralTower}
         self.lazy_collision_init = self.collision_init
+
+    def get_dx(self):
+        return self.dx
+
+    def get_dy(self):
+        return self.dy
+
 
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)
@@ -47,5 +54,13 @@ class Arrow(MovingObject):
             self.from_below = structure
             return (None, self)
 
+        @self.collide_registrar(mm.Arrow)
+        def arrow_collide(self, arrow):
+            return None, None
+
+        @self.collide_registrar(mm.SpiralTower)
+        def spiral_collide(self, spiral):
+            return None, spiral
+
     def get_info(self):
-        return "Огненный шар\nУрон: {0}".format(self.damage)
+        return "Энергетический шар\nУрон: {0}".format(self.damage)

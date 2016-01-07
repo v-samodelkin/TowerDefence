@@ -65,7 +65,8 @@ class Viewer:
         self.iground = PhotoImage(file=imagesdir + "ground3.png")
         self.ienemy1 = PhotoImage(file=imagesdir + "enemy3.png")
         self.iplayer = PhotoImage(file=imagesdir + "playerv3.png")
-        self.iarrow = PhotoImage(file=imagesdir + "ballv3.png")
+        self.ibigarrow = PhotoImage(file=imagesdir + "ballv3.png")
+        self.ismallarrow = PhotoImage(file=imagesdir + "sball.png")
         self.iheartstone = PhotoImage(file=imagesdir + "heartv2.png")
         self.itrap = PhotoImage(file=imagesdir + "trap.png")
         self.igameover = PhotoImage(file=imagesdir + "game_over.png")
@@ -96,21 +97,25 @@ class Viewer:
         switcher = {
             mm.Ground: lambda: self.iground,
             mm.Player: lambda: self.iplayer,
-            mm.Arrow: lambda: self.iarrow,
+            mm.Arrow: lambda: self.arrow_image(argument),
             mm.HeartStone: lambda: self.iheartstone,
             mm.Enemy: lambda: self.ienemy1,
             mm.Trap: lambda: self.itrap,
+            mm.SpiralTower: lambda: self.ispiralgenerator,
             mm.Wall: lambda: self.wall_image(argument),
         }
         return switcher.get(type(argument), lambda: None)()
 
     def wall_image(self, wall):
         return self.ibigwall if wall.max_health > 100 else self.ismallwall
-    '''
-    Производит перерисовку поля в связи с произошедшими изменениями
-    '''
+
+    def arrow_image(self, arrow):
+        return self.ibigarrow if arrow.damage > 5 else self.ismallarrow
 
     def view_map_model(self, hard=False):
+        '''
+        Производит перерисовку поля в связи с произошедшими изменениями
+        '''
         for i in range(0, 32):
             for j in range(0, 32):
                 image = self.element_to_image(self.model.cells[i][j].obj)
