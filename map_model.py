@@ -12,6 +12,7 @@ from MapObjects.Wall import Wall
 from MapObjects.Trap import Trap
 from MapObjects.SpiralTower import SpiralTower
 import Statistic as st
+import map_parser
 
 
 switcher = {
@@ -67,7 +68,7 @@ class MapModel:
         self.player_pos = player_pos
         self.heartstone_pos = heartstone_pos
         self.step = 0
-
+        self.player = None
         self.cells = [[Cell(singleton_ground) for y in range(height)] for x in range(width)]
         self.monster_way = [[1e9 for y in range(height)] for x in range(width)]
         self.where_to_go = [[[] for y in range(height)] for x in range(width)]
@@ -81,14 +82,14 @@ class MapModel:
             if (mid(0, new_x, self.width) and mid(0, new_y, self.height)):
                 self.cells[x][y].ways[k].where = self.cells[new_x][new_y].ways[(k + 2) % 4]
 
-        for i in range(castle_size):
-            self.cells[i][-castle_size].set_obj(Wall(200) if random.randint(0, 5) > 2 else singleton_ground)
-            self.cells[castle_size - 1][-(i + 1)].set_obj(Wall(200) if random.randint(0, 5) > 2 else singleton_ground)
 
-        self.player = Player()
-        self.cells[player_pos[0]][player_pos[1]].set_obj(self.player)
-        self.heartstone = HeartStone((self.width + heartstone_pos[0]) % self.width, (self.height + heartstone_pos[1]) % self.height, self.player)
-        self.cells[heartstone_pos[0]][heartstone_pos[1]].set_obj(self.heartstone)
+        cells = map_parser.get_default()
+        for (x, y) in itertools.product(range(self.width), range(self.height)):
+            self.cells[x][y].set_obj(cells[x][y])
+            if isinstance(cells[x][y], Player):
+                self.player = cells[x][y]
+            if isinstance(cells[x][y], HeartStone):
+                self.heartstone = cells[x][y]
 
     def reset(self):
         self.__init__(self.width, self.height, self.visualizer,

@@ -119,7 +119,7 @@ class Viewer:
         for i in range(0, 32):
             for j in range(0, 32):
                 image = self.element_to_image(self.model.cells[i][j].obj)
-                if (hard or image != self.view_model[i][j]):
+                if hard or image != self.view_model[i][j]:
                     self.canvas.delete(self.images_id[i][j])
                     self.images_id[i][j] = self.canvas.create_image(i * 24 + 12, j * 24 + 12, image=image)
                     self.view_model[i][j] = image
