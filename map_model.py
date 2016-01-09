@@ -54,8 +54,10 @@ class MapModel:
             if isinstance(self.cells[x][y].obj, Player):
                 return y
 
-    def __init__(self, width, height, visualizer, on_game_over, castle_size=8, player_pos=(3, 4), heartstone_pos=(3, -3)):
+    def __init__(self, width, height, visualizer, on_game_over, map_name):
         st.total_dead_enemies = 0
+        st.player_gold = 0
+        self.map_name = map_name
         self.width = width
         self.height = height
         self.cells = []
@@ -64,9 +66,6 @@ class MapModel:
         self.currentTurn = 0
         self.visualizer = visualizer
         self.on_game_over = on_game_over
-        self.castle_size = castle_size
-        self.player_pos = player_pos
-        self.heartstone_pos = heartstone_pos
         self.step = 0
         self.player = None
         self.cells = [[Cell(singleton_ground) for y in range(height)] for x in range(width)]
@@ -79,11 +78,11 @@ class MapModel:
         for (x, y, k) in itertools.product(range(width), range(height), range(4)):
             new_x = x + cdx[k]
             new_y = y + cdy[k]
-            if (mid(0, new_x, self.width) and mid(0, new_y, self.height)):
+            if mid(0, new_x, self.width) and mid(0, new_y, self.height):
                 self.cells[x][y].ways[k].where = self.cells[new_x][new_y].ways[(k + 2) % 4]
 
 
-        cells = map_parser.get_default()
+        cells = map_parser.read_from_file(map_name)
         for (x, y) in itertools.product(range(self.width), range(self.height)):
             self.cells[x][y].set_obj(cells[x][y])
             if isinstance(cells[x][y], Player):
@@ -93,8 +92,7 @@ class MapModel:
 
     def reset(self):
         self.__init__(self.width, self.height, self.visualizer,
-                      self.on_game_over, self.castle_size, self.player_pos,
-                      self.heartstone_pos)
+                      self.on_game_over, self.map_name)
 
     @not_on_game_end
     def player_move(self, dx, dy):
@@ -363,7 +361,9 @@ class MapModel:
         '''
         Проверка на окончание игры
         '''
-        if (self.player.is_dead()):
+        if (not self.player or self.player.is_dead()):
             self.on_game_over()
+            with open("records.txt", "a") as f:
+                f.write("{0}\n".format(st.total_dead_enemies))
             return True
         return False

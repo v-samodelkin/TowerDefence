@@ -8,7 +8,7 @@ import Info
 
 
 class Viewer:
-    def __init__(self, size_of_element, width, height):
+    def __init__(self, size_of_element, width, height, map_name):
         # Настройка Style
         self.top = Tk()
         s = ttk.Style()
@@ -17,7 +17,7 @@ class Viewer:
         s.configure("blue.Vertical.TProgressbar", troughcolor='gray', background='blue')
 
         # Настройка canvas
-        self.model = mm.MapModel(width, height, self.view_map_model, self.show_game_over_screen)
+        self.model = mm.MapModel(width, height, self.view_map_model, self.show_game_over_screen, map_name)
         self.size_of_element = size_of_element
         self.canvas = Canvas(self.top, width=self.model.width * size_of_element + 200,
                              height=self.model.height * size_of_element)
@@ -159,17 +159,18 @@ class Viewer:
         self.canvas.create_image(16 * 24, 16 * 24, image=self.igameover)
 
     def before_restart(self):
-        with open("records.txt", "a") as f:
-            f.write("{0}\n".format(st.total_dead_enemies))
         self.update_records_box()
 
 
 def main():
-    init()
+    map_name = "first"
+    if len(sys.argv) > 1:
+        map_name = sys.argv[1]
+    init(map_name)
 
 
-def init():
-    controller = tdc.Controller(Viewer(24, 32, 32), init)
+def init(map_name):
+    controller = tdc.Controller(Viewer(24, 32, 32, map_name), init)
     controller.start()
     controller.viewer.top.mainloop()
 

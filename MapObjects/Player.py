@@ -25,6 +25,9 @@ class Player(MovingObject):
     def fired(self):
         self.cooldown = 3
 
+    def check(self):
+        return self
+
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)
         def enemy_Collision(self, enemy):
