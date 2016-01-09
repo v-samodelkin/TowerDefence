@@ -2,7 +2,7 @@
 import random
 import itertools
 from heapq import *
-from MapObjects.Arrow import Arrow
+from MapObjects.arrow import Arrow
 from MapObjects.Cell import Cell
 from MapObjects.Enemy import Enemy
 from MapObjects.Ground import Ground

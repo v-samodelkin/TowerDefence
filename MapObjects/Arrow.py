@@ -24,41 +24,41 @@ class Arrow(MovingObject):
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)
         @self.collide_registrar(mm.Player)
-        def alive_collision(self, alive):
-            alive.health -= self.damage
-            if (alive.health > 0):
-                return (None, alive)
+        def alive_collision(obj, alive):
+            alive.health -= obj.damage
+            if alive.health > 0:
+                return None, alive
             else:
                 alive.on_dead()
-                return (None, alive.get_from_below())
+                return None, alive.get_from_below()
 
         @self.collide_registrar(mm.Wall)
-        def wall_collision(self, wall):
-            wall.health -= self.damage
-            if (wall.health <= 0):
-                return (None, None)
+        def wall_collision(obj, wall):
+            wall.health -= obj.damage
+            if wall.health <= 0:
+                return None, None
             else:
-                return (None, wall)
+                return None, wall
 
         @self.collide_registrar(mm.Ground)
-        def ground_collision(self, ground):
-            return (None, self)
+        def ground_collision(obj, ground):
+            return None, obj
 
         @self.collide_registrar(mm.HeartStone)
-        def heart_stone_collision(self, heartstone):
-            return (None, heartstone)
+        def heart_stone_collision(obj, heartstone):
+            return None, heartstone
 
         @self.collide_registrar(mm.Trap)
-        def walkable_structure_collide(self, structure):
+        def walkable_structure_collide(obj, structure):
             self.from_below = structure
-            return (None, self)
+            return None, obj
 
         @self.collide_registrar(mm.Arrow)
-        def arrow_collide(self, arrow):
+        def arrow_collide(obj, arrow):
             return None, None
 
         @self.collide_registrar(mm.SpiralTower)
-        def spiral_collide(self, spiral):
+        def spiral_collide(obj, spiral):
             return None, spiral
 
     def get_info(self):
