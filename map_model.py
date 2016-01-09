@@ -57,6 +57,7 @@ class MapModel:
     def __init__(self, width, height, visualizer, on_game_over, map_name):
         st.total_dead_enemies = 0
         st.player_gold = 0
+        self.end = False
         self.map_name = map_name
         self.width = width
         self.height = height
@@ -80,7 +81,6 @@ class MapModel:
             new_y = y + cdy[k]
             if mid(0, new_x, self.width) and mid(0, new_y, self.height):
                 self.cells[x][y].ways[k].where = self.cells[new_x][new_y].ways[(k + 2) % 4]
-
 
         cells = map_parser.read_from_file(map_name)
         for (x, y) in itertools.product(range(self.width), range(self.height)):
@@ -111,7 +111,6 @@ class MapModel:
             if (mid(0, px + dx, self.width) and mid(0, py + dy, self.height)):
                 self.cells[px + dx][py + dy].ways[way(dx, dy)].set_obj(self.player)
                 self.cells[px][py].set_obj(self.cells[px][py].obj.get_from_below())
-
 
     def spiral_tower_turn(self, x, y):
         '''
@@ -193,6 +192,7 @@ class MapModel:
                         self.spiral_tower_turn(x, y)
                         checked = self.cells[x][y].obj.check()
                         self.cells[x][y].obj = checked if checked else singleton_ground
+
     def generate_enemies(self, count):
         '''
         Генерация врагов
@@ -253,7 +253,7 @@ class MapModel:
         if (self.step == 0):
             self.pre_turn()
         self.rooms_turn(player_dx, player_dy, self.step)
-        self.step = (self.step + 1) % 6
+        self.step = (self.step + 1) % 2
 
     @not_on_game_end
     def player_place(self, what):
@@ -363,7 +363,9 @@ class MapModel:
         '''
         if (not self.player or self.player.is_dead()):
             self.on_game_over()
-            with open("records.txt", "a") as f:
-                f.write("{0}\n".format(st.total_dead_enemies))
+            if (not self.end):
+                with open("records.txt", "a") as f:
+                    f.write("{0}\n".format(st.total_dead_enemies))
+            self.end = True
             return True
         return False

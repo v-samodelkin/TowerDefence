@@ -6,7 +6,7 @@ import map_model as mm
 class Arrow(MovingObject):
     def __init__(self, damage, dx, dy):
         super().__init__()
-        self.turns = {2, 5}
+        self.turns = {0, 1}
         self.extra_turns = 1
         self.damage = damage
         self.dx = dx
@@ -20,7 +20,6 @@ class Arrow(MovingObject):
 
     def get_dy(self):
         return self.dy
-
 
     def collision_init(self):
         @self.collide_registrar(mm.Enemy)

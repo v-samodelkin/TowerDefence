@@ -12,6 +12,7 @@ shift - пауза
 r - Рестарт
 '''
 
+
 def get_records():
     try:
         with open("records.txt", "r") as f:

@@ -56,7 +56,7 @@ class Controller:
         self.do_action_by_key(event.char)
         self.viewer.view_map_model()
 
-    @set_interval(.01)
+    @set_interval(.02)
     def function(self):
         self.action()
         if self.model.check_game_end():

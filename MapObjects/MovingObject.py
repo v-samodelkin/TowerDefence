@@ -5,7 +5,7 @@ from MapObjects.MapObject import MapObject
 class MovingObject(MapObject):
     def __init__(self):
         self.gold = 0
-        self.turns = {3}
+        self.turns = {0}
         self.extra_turns = 0
         self.unpretty = 100
         self.colliders = {}

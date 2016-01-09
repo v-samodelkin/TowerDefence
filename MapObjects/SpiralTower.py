@@ -5,7 +5,7 @@ from MapObjects.MapObject import MapObject
 class SpiralTower(MapObject):
     def __init__(self):
         super().__init__()
-        self.turns = {5}
+        self.turns = {1}
         self.health = 200
         self.unpretty = 80
         self.cost = 30

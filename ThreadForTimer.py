@@ -1,6 +1,7 @@
 import threading
 import functools
 
+
 def set_interval(interval):
     def decorator(function, interval=interval):
 
