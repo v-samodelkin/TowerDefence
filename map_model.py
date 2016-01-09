@@ -13,6 +13,7 @@ from MapObjects.Trap import Trap
 from MapObjects.SpiralTower import SpiralTower
 import Statistic as st
 import map_parser
+import tower_defence_controller as tdc
 
 
 switcher = {
@@ -364,7 +365,7 @@ class MapModel:
         if (not self.player or self.player.is_dead()):
             self.on_game_over()
             if (not self.end):
-                with open("records.txt", "a") as f:
+                with open(tdc.records_file_name, "a") as f:
                     f.write("{0}\n".format(st.total_dead_enemies))
             self.end = True
             return True

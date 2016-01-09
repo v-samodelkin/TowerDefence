@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+import tower_defence_controller as tdc
 def get_readme():
     return '''Управление
 wasd - перемещение
@@ -15,7 +16,7 @@ r - Рестарт
 
 def get_records():
     try:
-        with open("records.txt", "r") as f:
+        with open(tdc.records_file_name, "r") as f:
             records = list(map(int, f.read().split()))
             records.sort(reverse=True)
             if len(records) == 0:
@@ -28,5 +29,5 @@ def get_records():
             return text
     except FileNotFoundError:
         return "Рекорды по очкам\nРекордов нет."
-    except:
+    except Exception:
         return "Рекорды по очкам\nОшибка загрузки"

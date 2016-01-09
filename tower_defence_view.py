@@ -5,6 +5,7 @@ import map_model as mm
 import tower_defence_controller as tdc
 import Statistic as st
 import Info
+import itertools
 
 
 class Viewer:
@@ -116,8 +117,7 @@ class Viewer:
         '''
         Производит перерисовку поля в связи с произошедшими изменениями
         '''
-        for i in range(0, 32):
-            for j in range(0, 32):
+        for (i, j) in itertools.product(range(32), range(32)):
                 image = self.element_to_image(self.model.cells[i][j].obj)
                 if hard or image != self.view_model[i][j]:
                     self.canvas.delete(self.images_id[i][j])

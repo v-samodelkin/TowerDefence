@@ -1,5 +1,6 @@
 from ThreadForTimer import set_interval
 
+records_file_name = "records.txt"
 
 class Controller:
 
