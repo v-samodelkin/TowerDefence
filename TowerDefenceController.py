@@ -2,11 +2,9 @@ from ThreadForTimer import set_interval
 
 records_file_name = "records.txt"
 
+
 class Controller:
-
-
-
-    def __init__(self, viewer, init):
+    def __init__(self, viewer):
         self.viewer = viewer
         self.model = viewer.model
         self.stop = self.function()
@@ -57,7 +55,7 @@ class Controller:
         self.do_action_by_key(event.char)
         self.viewer.view_map_model()
 
-    @set_interval(.02)
+    @set_interval(.01)
     def function(self):
         self.action()
         if self.model.check_game_end():

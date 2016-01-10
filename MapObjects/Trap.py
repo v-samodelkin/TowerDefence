@@ -20,4 +20,7 @@ class Trap(MapObject, WalkableStructure):
             movable.health -= self.damage
 
     def get_info(self):
-        return "Шипастая ловушка\nУрон: {0}\nПрочность: {1}".format(self.damage, self.health)
+        info = "Шипастая ловушка\n"
+        info += "Урон: {0}".format(self.damage)
+        info += "Прочность: {0}\n".format(self.health)
+        return info

@@ -1,15 +1,16 @@
-import map_model as mm
+import MapModel as Mm
 from MapObjects.MapObject import MapObject
 
 
 class MovingObject(MapObject):
     def __init__(self):
+        super().__init__()
         self.gold = 0
         self.turns = {0}
         self.extra_turns = 0
         self.unpretty = 100
         self.colliders = {}
-        self.able_to_go = {mm.Ground}
+        self.able_to_go = {Mm.Ground}
         self.damage = 1
         self.health = 1
         self.lazy_collision_init = self.collision_init
@@ -31,12 +32,13 @@ class MovingObject(MapObject):
         return registered
 
     def collision_init(self):
-        @self.collide_registrar(mm.Ground)
-        def ground_Collision(self, ground):
-            return (None, self)
+        # noinspection PyUnusedLocal
+        @self.collide_registrar(Mm.Ground)
+        def ground_collision(obj, ground):
+            return None, obj
 
     def on_dead(self):
-        return mm.singleton_ground
+        return Mm.ground
 
     def get_from_below(self):
         return self.from_below

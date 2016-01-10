@@ -1,22 +1,58 @@
 # -*- coding: utf8 -*-
-import tower_defence_controller as tdc
+import TowerDefenceController as Tdc
+
+
+def shell(number, target):
+    if number == target:
+        return "[{0}]".format(number)
+    else:
+        return " {0} ".format(number)
+
+
+def get_editor_readme(target):
+    readme = ["Управление\n",
+              shell('1', target) + " - пустая клетка\n",
+              shell('2', target) + " - игрок\n",
+              shell('3', target) + " - камень жизни\n",
+              shell('4', target) + " - шипы\n",
+              shell('5', target) + " - спираль\n",
+              shell('6', target) + " - стена\n",
+              shell('7', target) + " - стена [40%]\n",
+              " s  - сохранение\n"]
+    return merge(readme)
+
+
+
 def get_readme():
-    return '''Управление
-wasd - перемещение
-e - ожидание
-space - выстрел
-shift - пауза
-1 - Шипы [40]
-2 - Заграждение [10]
-3 - Спираль [30]
+    readme = ["Управление\n",
+              "wasd - перемещение\n",
+              "e - ожидание\n",
+              "space - выстрел\n",
+              "shift - пауза\n",
+              "r - Рестарт\n",
+              "1 - Шипы [40]\n",
+              "2 - Заграждение [10]\n",
+              "3 - Спираль [30]\n"]
+    return merge(readme)
 
-r - Рестарт
-'''
+
+def get_editor_description():
+    description = ["Привет!\n",
+                   "Как ты?\n"]
+    return merge(description)
 
 
+def merge(list):
+    merged = ""
+    for element in list:
+        merged += element
+    return merged
+
+
+# noinspection PyBroadException
 def get_records():
     try:
-        with open(tdc.records_file_name, "r") as f:
+        with open(Tdc.records_file_name, "r") as f:
             records = list(map(int, f.read().split()))
             records.sort(reverse=True)
             if len(records) == 0:

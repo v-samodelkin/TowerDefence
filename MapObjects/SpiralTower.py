@@ -14,7 +14,11 @@ class SpiralTower(MapObject):
         self.direction = 0
 
     def get_info(self):
-        return "Спиральный генератор\nУрон: {0}\nПрочность: {1}\nПерезарядка: {2}".format(self.damage, self.health, self.cooldown)
+        info = "Спиральный генератор\n"
+        info += "Урон: {0}\n".format(self.damage)
+        info += "Прочность: {0}\n".format(self.health)
+        info += "Перезарядка: {0}".format(self.cooldown)
+        return info
 
     def fired(self):
         self.cooldown = 1

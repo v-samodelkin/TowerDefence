@@ -1,7 +1,14 @@
 <component name="ProjectDictionaryState">
   <dictionary name="Vitaliy">
     <words>
+      <w>colliders</w>
+      <w>constdx</w>
+      <w>constdy</w>
       <w>heartstone</w>
+      <w>newx</w>
+      <w>newy</w>
+      <w>preload</w>
+      <w>wasd</w>
     </words>
   </dictionary>
 </component>

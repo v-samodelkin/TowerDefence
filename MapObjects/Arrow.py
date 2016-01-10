@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 from MapObjects.MovingObject import MovingObject
-import map_model as mm
+import MapModel as Mm
 
 
 class Arrow(MovingObject):
@@ -12,7 +12,9 @@ class Arrow(MovingObject):
         self.dx = dx
         self.dy = dy
         self.unpretty = 150
-        self.able_to_go = {mm.Player, mm.Enemy, mm.Wall, mm.Ground, mm.HeartStone, mm.Trap, mm.Arrow, mm.SpiralTower}
+        self.able_to_go = {Mm.Player, Mm.Enemy, Mm.Wall,
+                           Mm.Ground, Mm.HeartStone, Mm.Trap,
+                           Mm.Arrow, Mm.SpiralTower}
         self.lazy_collision_init = self.collision_init
 
     def get_dx(self):
@@ -22,8 +24,8 @@ class Arrow(MovingObject):
         return self.dy
 
     def collision_init(self):
-        @self.collide_registrar(mm.Enemy)
-        @self.collide_registrar(mm.Player)
+        @self.collide_registrar(Mm.Enemy)
+        @self.collide_registrar(Mm.Player)
         def alive_collision(obj, alive):
             alive.health -= obj.damage
             if alive.health > 0:
@@ -32,7 +34,7 @@ class Arrow(MovingObject):
                 alive.on_dead()
                 return None, alive.get_from_below()
 
-        @self.collide_registrar(mm.Wall)
+        @self.collide_registrar(Mm.Wall)
         def wall_collision(obj, wall):
             wall.health -= obj.damage
             if wall.health <= 0:
@@ -40,24 +42,28 @@ class Arrow(MovingObject):
             else:
                 return None, wall
 
-        @self.collide_registrar(mm.Ground)
+        # noinspection PyUnusedLocal
+        @self.collide_registrar(Mm.Ground)
         def ground_collision(obj, ground):
             return None, obj
 
-        @self.collide_registrar(mm.HeartStone)
+        # noinspection PyUnusedLocal
+        @self.collide_registrar(Mm.HeartStone)
         def heart_stone_collision(obj, heartstone):
             return None, heartstone
 
-        @self.collide_registrar(mm.Trap)
+        @self.collide_registrar(Mm.Trap)
         def walkable_structure_collide(obj, structure):
             self.from_below = structure
             return None, obj
 
-        @self.collide_registrar(mm.Arrow)
+        # noinspection PyUnusedLocal
+        @self.collide_registrar(Mm.Arrow)
         def arrow_collide(obj, arrow):
             return None, None
 
-        @self.collide_registrar(mm.SpiralTower)
+        # noinspection PyUnusedLocal
+        @self.collide_registrar(Mm.SpiralTower)
         def spiral_collide(obj, spiral):
             return None, spiral
 

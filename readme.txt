@@ -1,6 +1,10 @@
 Формат запуска:
-tower_defence_view.py <MapName>
-MapName - необязательный параметр с назыанием карты
+TowerDefenceView.py <MapName>
+MapName - необязательный параметр с названием карты
+
+Редактор карт:
+Editor.py <MapName>
+MapName - необязательный параметр с названием карты, изначально равен no_name
 ____________________________
 Игра в жанре Tower Defence.
 Цель:

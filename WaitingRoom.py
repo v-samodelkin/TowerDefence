@@ -1,4 +1,4 @@
-import map_model as mm
+import MapModel as Mm
 
 
 class WaitingRoom:
@@ -9,6 +9,6 @@ class WaitingRoom:
         self.hard = False
 
     def set_obj(self, obj, hard=False):
-        assert not isinstance(obj, mm.Cell)
+        assert not isinstance(obj, Mm.Cell)
         self.obj = obj
         self.hard = hard

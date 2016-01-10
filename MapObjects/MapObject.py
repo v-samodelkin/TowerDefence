@@ -1,4 +1,7 @@
 class MapObject:
+    def __init__(self):
+        self.health = 1
+
     def get_info(self):
         return type(self).__name__
 
