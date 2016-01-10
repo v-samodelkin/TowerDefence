@@ -8,13 +8,13 @@ class Controller:
         self.viewer = viewer
         self.model = viewer.model
         self.stop = self.function()
-        self.action = self.model.turn
+        self.action = self.model.step
         self.get_action = {
             'w': (lambda: self.model.player_move(0, -1)),
             's': (lambda: self.model.player_move(0, 1)),
             'a': (lambda: self.model.player_move(-1, 0)),
             'd': (lambda: self.model.player_move(1, 0)),
-            'e': (lambda: self.model.turn()),
+            'e': (lambda: self.model.step()),
             ' ': (lambda: self.model.player_fire(10)),
             '1': (lambda: self.model.player_place(1)),
             '2': (lambda: self.model.player_place(2)),
@@ -48,7 +48,7 @@ class Controller:
             self.viewer.view_map_model(hard=True)
             self.stop = self.function()
             self.viewer.model.reset()
-            self.action = self.model.turn
+            self.action = self.model.step
 
     def key(self, event):
         self.action = self.get_action_by_key(event.char)

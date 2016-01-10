@@ -1,2 +1,2 @@
-total_dead_enemies = 0
+total_killed_enemies = 0
 player_gold = 0

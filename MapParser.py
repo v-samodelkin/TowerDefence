@@ -6,7 +6,7 @@ import random
 import itertools
 
 
-def get_object_by_char(char, player, x, y):
+def get_object_by_char(char, player):
     switcher = {
         '.': lambda: Mm.ground,
         'W': lambda: Wall(200),
@@ -36,8 +36,6 @@ def get_default():
 
     player = Player()
     cells[player_pos[0]][player_pos[1]] = player
-    h_x = (width + heartstone_pos[0]) % width
-    h_y = (height + heartstone_pos[1]) % height
     heartstone = HeartStone(player)
     cells[heartstone_pos[0]][heartstone_pos[1]] = heartstone
     return cells
@@ -52,7 +50,7 @@ def read_from_file(filename):
             cells = [[Mm.ground for _ in range(height)] for _ in range(width)]
             player = Player()
             for (x, y) in itertools.product(range(width), range(height)):
-                cells[x][y] = get_object_by_char(lines[y][x], player, x, y)
+                cells[x][y] = get_object_by_char(lines[y][x], player)
             return cells
     except Exception:
         return get_default()

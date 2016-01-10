@@ -20,7 +20,7 @@ class Enemy(MovingObject):
         self.lazy_collision_init = self.collision_init
 
     def on_dead(self):
-        Statistic.total_dead_enemies += 1
+        Statistic.total_killed_enemies += 1
         Statistic.player_gold += self.gold
         return self.get_from_below()
 

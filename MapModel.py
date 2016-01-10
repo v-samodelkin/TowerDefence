@@ -58,7 +58,7 @@ class MapModel:
                 return y
 
     def __init__(self, visualizer, on_game_over, map_name):
-        Statistic.total_dead_enemies = 0
+        Statistic.total_killed_enemies = 0
         Statistic.player_gold = 0
         self.end = False
         self.map_name = map_name
@@ -68,7 +68,7 @@ class MapModel:
         self.currentTurn = 0
         self.visualizer = visualizer
         self.on_game_over = on_game_over
-        self.step = 0
+        self.step_number = 0
         self.player = None
         self.cells = [[Cell(ground) for _ in range(size)] for _ in range(size)]
         self.monster_way = [[1e9 for _ in range(size)] for _ in range(size)]
@@ -112,7 +112,7 @@ class MapModel:
         px = self.player_x()
         py = self.player_y()
         if mid(0, px + dx, size) and mid(0, py + dy, size):
-            self.turn(dx, dy)
+            self.step(dx, dy)
 
     def player_corridor_turn(self, dx, dy):
         if dx or dy:
@@ -156,7 +156,7 @@ class MapModel:
                     cell = self.cells[newx][newy]
                     c_way = cell.ways[way(self.constdx[i], self.constdy[i])]
                     c_way.set_obj(arrow)
-        self.turn()
+        self.step()
 
     def arrow_corridor_turn(self, x, y):
         """
@@ -263,14 +263,14 @@ class MapModel:
                         cell.ways[i].obj, cell.ways[i].where.obj = None, obj
 
     @not_on_game_end
-    def turn(self, player_dx=0, player_dy=0):
+    def step(self, player_dx=0, player_dy=0):
         """
         Вычисление основных этапов хода
         """
-        if self.step == 0:
+        if self.step_number == 0:
             self.pre_turn()
-        self.rooms_turn(player_dx, player_dy, self.step)
-        self.step = (self.step + 1) % 2
+        self.rooms_turn(player_dx, player_dy, self.step_number)
+        self.step_number = (self.step_number + 1) % 2
 
     @not_on_game_end
     def player_place(self, what):
@@ -278,7 +278,7 @@ class MapModel:
         Установка башни на клетку
         """
         self.player_place_switcher.get(what, lambda: None)()
-        self.turn()
+        self.step()
 
     def place_trap(self):
         if isinstance(self.player.from_below, Ground):
@@ -307,7 +307,6 @@ class MapModel:
         """
         # Preload
         self.currentTurn += 1
-        print("Turn: " + str(self.currentTurn))
         self.find_way(self.heartstone_x, self.heartstone_y)
 
         # Player
@@ -327,6 +326,10 @@ class MapModel:
         # Обработка комнат ожидания
         self.deal_with_waiting_rooms()
         self.visualizer()
+
+    @staticmethod
+    def get_killed_count():
+        return Statistic.total_killed_enemies
 
     def find_way(self, x, y):
         """
@@ -376,7 +379,7 @@ class MapModel:
             self.on_game_over()
             if not self.end:
                 with open(Tdc.records_file_name, "a") as f:
-                    f.write("{0}\n".format(Statistic.total_dead_enemies))
+                    f.write("{0}\n".format(Statistic.total_killed_enemies))
             self.end = True
             return True
         return False

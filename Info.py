@@ -22,7 +22,6 @@ def get_editor_readme(target):
     return merge(readme)
 
 
-
 def get_readme():
     readme = ["Управление\n",
               "wasd - перемещение\n",
@@ -37,14 +36,28 @@ def get_readme():
 
 
 def get_editor_description():
-    description = ["Привет!\n",
-                   "Как ты?\n"]
-    return merge(description)
+    return merge(["     /:\    (''') \n",
+                  "     |:|     III  \n",
+                  "     |:|     III  \n",
+                  "     |:|     III  \n",
+                  "     |:|   __III__\n",
+                  "     |:| /:-.___,-:\\\n",
+                  "     |:| \]  |:|  [/\n",
+                  "     |:|     |:| \n",
+                  "     |:|     |:| \n",
+                  "     |:|     |:| \n",
+                  " /]  |:|  [\ |:| \n",
+                  " \:-''''`-:/ |:| \n",
+                  "   ''III''   |:| \n",
+                  "     III     |:| \n",
+                  "     III     |:| \n",
+                  "     III     |:| \n",
+                  "    (___)    \:/"])
 
 
-def merge(list):
+def merge(string_list):
     merged = ""
-    for element in list:
+    for element in string_list:
         merged += element
     return merged
 

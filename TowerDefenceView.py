@@ -140,7 +140,7 @@ class Viewer:
                 self.images[i][j] = canvas.create_image(i_x, j_y, image=image)
                 self.view_model[i][j] = image
 
-        self.enemy_bar["value"] = St.total_dead_enemies
+        self.enemy_bar["value"] = St.total_killed_enemies
         self.health_bar["value"] = self.model.player.health
         self.update_text_box()
         self.update_info_box()
@@ -151,7 +151,7 @@ class Viewer:
         self.info.config(state=NORMAL)
         self.info.delete(1.0, END)
         self.info.insert(END, "Информация о герое\n")
-        self.info.insert(END, "Очков: {0}\n".format(St.total_dead_enemies))
+        self.info.insert(END, "Очков: {0}\n".format(St.total_killed_enemies))
         self.info.insert(END, "Здоровье: {0} hp\n".format(player.health))
         self.info.insert(END, "Золото: {0} hp\n".format(St.player_gold))
         self.info.config(state=DISABLED)

@@ -16,6 +16,7 @@ char_by_object_switcher = {
     Mm.Trap: 'T',
 }
 
+
 class Editor:
     def __init__(self, size_of_element, map_name):
         self.map_name = map_name
@@ -38,7 +39,7 @@ class Editor:
         self.heartstone = Mm.HeartStone(self.player)
 
         # Информационное поле ячейки
-        self.about = Text(self.top, height=10, width=20)
+        self.about = Text(self.top, height=17, width=20)
         self.about.insert(END, Info.get_editor_description())
         self.about.place(x=Mm.size * size_of_element + 20, y=10)
         self.about_obj = Mm.ground
@@ -47,19 +48,19 @@ class Editor:
         # Лог
         self.log = Text(self.top, height=10, width=20)
         self.log.insert(END, "Лог изменений")
-        self.log.place(x=Mm.size * size_of_element + 20, y=180)
+        self.log.place(x=Mm.size * size_of_element + 20, y=290)
         self.log.config(state=DISABLED)
 
         # Инструкуция
-        self.readme = Text(self.top, height=20, width=20)
+        self.readme = Text(self.top, height=10, width=20)
         self.readme.insert(END, Info.get_editor_readme(self.prev_key))
-        self.readme.place(x=Mm.size * size_of_element + 20, y=350)
+        self.readme.place(x=Mm.size * size_of_element + 20, y=460)
         self.readme.config(state=DISABLED)
 
-
-
         # Сохранение
-        self.save_messages = ["Сохранено!", "Сохранение успешно", "Карта сохранена"]
+        self.save_messages = ["Сохранено!",
+                              "Сохранение успешно",
+                              "Карта сохранена"]
         self.save_message_id = 0
 
         # Загрузка текстур
@@ -107,7 +108,6 @@ class Editor:
         self.view_map()
         self.top.mainloop()
 
-
     def coordinate(self, x):
         """
         Переводит координаты поля в координаты на экране
@@ -142,7 +142,6 @@ class Editor:
         self.about.insert(END, self.about_obj.get_info())
         self.about.config(state=DISABLED)
 
-
     def view_map(self, hard=False):
         """
         Производит перерисовку поля в связи с произошедшими изменениями
@@ -172,9 +171,9 @@ class Editor:
         self.do_action_by_key(event.char)
         self.view_map()
 
-    def clear(self, type):
+    def clear(self, obj_type):
         for (x, y) in product(range(Mm.size), range(Mm.size)):
-            if isinstance(self.cells[x][y], type):
+            if isinstance(self.cells[x][y], obj_type):
                 self.cells[x][y] = Mm.ground
 
     def place(self):
@@ -198,6 +197,7 @@ class Editor:
         obj = self.cells[x][y]
         return char_by_object_switcher.get(type(obj), '.')
 
+    # noinspection PyBroadException
     def save(self):
         try:
             with open(self.map_name, "w") as f:
@@ -215,6 +215,8 @@ class Editor:
             self.log.delete(1.0, END)
             self.log.insert(END, "Ошибка сохранения")
             self.log.config(state=DISABLED)
+
+
 def main():
     map_name = "no_name"
     if len(sys.argv) > 1:

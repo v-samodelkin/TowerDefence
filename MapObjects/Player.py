@@ -45,8 +45,8 @@ class Player(MovingObject):
 
         @self.collide_registrar(Mm.Arrow)
         def arrow_collision(obj, arrow):
-            if obj.health > arrow.damage:
-                obj.health -= arrow.damage
+            obj.health -= arrow.damage
+            if obj.health > 0:
                 return None, obj
             else:
                 return None, None

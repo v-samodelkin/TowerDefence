@@ -21,6 +21,6 @@ class Trap(MapObject, WalkableStructure):
 
     def get_info(self):
         info = "Шипастая ловушка\n"
-        info += "Урон: {0}".format(self.damage)
+        info += "Урон: {0}\n".format(self.damage)
         info += "Прочность: {0}\n".format(self.health)
         return info
